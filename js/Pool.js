@@ -62,14 +62,6 @@ define(['stack'], function(Stack) {
 			}
 			return false;
 		},
-		getColor: function(x, y) {
-			if (this.hasWater && this.waterHeights[y][x] > -1) {
-				return "rgb(0,0,255)";
-			} else {
-				var comp = Math.floor(256.0 / this.depth * this.poolHeights[y][x]);
-				return "rgb(" + comp + "," + comp + "," + comp + ")";
-			}
-		},
 		getNext: function(x, y) {
 			var next = [];
 			if (x > 0)               {next.push({_x: x - 1, _y: y})}
@@ -80,28 +72,6 @@ define(['stack'], function(Stack) {
 		},
 		isBoundary: function(x, y) {
 			return y == 0 || y == this.height - 1 || x == 0 || x == this.width - 1;
-		},
-		render: function(el) {
-			var table = document.createElement("table");
-			table.setAttribute("cellpadding", "0");
-			table.setAttribute("cellspacing", "0");
-			el.appendChild(table);
-			
-			for (var i = 0; i < this.height; i++) {
-				var tr = document.createElement("tr");
-				table.appendChild(tr);
-				for (var j = 0; j < this.width; j++) {
-					var td = document.createElement("td");
-					td.className = "cell";
-					var div = document.createElement("div");			
-					
-					div.style["background-color"] = this.getColor(j, i);
-					div.innerHTML = this.poolHeights[i][j];
-					
-					td.appendChild(div);
-					tr.appendChild(td);
-				}
-			}
 		}
 	};
 	
