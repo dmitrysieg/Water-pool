@@ -40,28 +40,33 @@ define(['stack'], function(Stack) {
 				for (var i = 0; i < this.width; i++) {
 					var lowest = this.poolHeights[j][i] + 1,
 						highest = maxPHeight;
-					var lastPredictedWHeight = maxPHeight,
-						nextPredictedWHeight = lowest + Math.floor((highest - lowest) / 2);
+					var lastCenter = maxPHeight,
+						center = Math.floor((lowest + highest) / 2);
 						
 					var lastResultPoored = true;
-					while (Math.abs(nextPredictedWHeight - lastPredictedWHeight) > 0) {
+					while (Math.abs(lastCenter - center) > 0) {
 						
-						var diff = Math.abs(nextPredictedWHeight - lastPredictedWHeight);
-
-						if (this.isBoundary(i, j) || this.findBoundary(i, j, nextPredictedWHeight)) {
-							lastPredictedWHeight = nextPredictedWHeight;
-							nextPredictedWHeight -= Math.floor(diff / 2);
+						if (this.isBoundary(i, j) || this.findBoundary(i, j, center)) {
+                            
+                            console.log(j + " " + i + " " + center + " poored");
+                            highest = center;
+							lastCenter = center;
+							center = Math.floor((lowest + highest) / 2);
+                            
 							lastResultPoored = true;
-							console.log(j + " " + i + " " + nextPredictedWHeight + " poored");
+							
 						} else {
-							lastPredictedWHeight = nextPredictedWHeight;
-							nextPredictedWHeight += Math.floor(diff / 2);
+							
+                            console.log(j + " " + i + " " + center + " not poored");
+                            lowest = center;
+                            lastCenter = center;
+							center = Math.floor((lowest + highest) / 2);
+                            
 							lastResultPoored = false;
-							console.log(j + " " + i + " " + nextPredictedWHeight + " not poored");
 						}
 					}
 					if (!lastResultPoored) {
-						this.waterHeights[j][i] = lastPredictedWHeight;
+						this.waterHeights[j][i] = lastCenter;
 						console.log("WH " + this.waterHeights[j][i] + " PH " + this.poolHeights[j][i]);
 					}
 				}
