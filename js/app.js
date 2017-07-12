@@ -1,5 +1,5 @@
-require(['standardgenerator', 'harmonicgenerator', 'pool', 'pooltableview'],
-	function(StandardGenerator, HarmonicGenerator, Pool, PoolTableView) {
+require(['standardgenerator', 'harmonicgenerator', 'pool', 'pool3dview'],
+	function(StandardGenerator, HarmonicGenerator, Pool, PoolView) {
 		var pool = new Pool(
 			64, 64, 2,
 		//	new HarmonicGenerator(
@@ -13,6 +13,7 @@ require(['standardgenerator', 'harmonicgenerator', 'pool', 'pooltableview'],
 			new StandardGenerator(2)
 		);
 		pool.fill();
-		new PoolTableView(pool, document.getElementById('pool'), 8, 8).render();
+		//new PoolTableView(pool, document.getElementById('pool'), 8, 8).render();
+		new PoolView(pool, document.getElementById('pool'), 8, 8).render();
 	}
 );
