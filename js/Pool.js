@@ -38,9 +38,14 @@ define(['stack'], function(Stack) {
 			
 			for (var j = 0; j < this.height; j++) {
 				for (var i = 0; i < this.width; i++) {
+                    
+                    if (this.poolHeights[j][i] == maxPHeight) {
+                        continue;
+                    }
+                    
 					var lowest = this.poolHeights[j][i] + 1,
 						highest = maxPHeight;
-					var lastCenter = maxPHeight,
+					var lastCenter = maxPHeight + 1, // some unreachable value, uncomparable with the "center" value at the beginning
 						center = Math.floor((lowest + highest) / 2);
 						
 					var lastResultPoored = true;
