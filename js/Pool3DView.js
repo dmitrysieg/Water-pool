@@ -46,14 +46,15 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 		setupScene: function() {
 			var scene = new THREE.Scene();
 			var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+			this.camera = camera;
 
 			var renderer = new THREE.WebGLRenderer();
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			// todo this.getEl()
 			document.body.appendChild(renderer.domElement);
 			
-			camera.position.set(0, 32, 0);
-			camera.lookAt(new THREE.Vector3(16, 0, 16));
+			camera.position.set(-15, 35, -7.5);
+			camera.lookAt(new THREE.Vector3(0.56, -0.72, 0.40));
 			
 			var lights = [];
 			lights[0] = new THREE.PointLight(0xffffff, 1, 0);
@@ -81,12 +82,24 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 			};
 			
 			r();
+			var timerId = setInterval(this.startlogging, 1000, this.camera);
 			
 			return scene;
 		},
 		render: function() {
 			this.scene = this.setupScene();
 			this.setupPool(this.scene);
+		},
+		startlogging: function(camera) {
+			var el = document.getElementById('infotext');
+			var dir = camera.getWorldDirection();
+			el.innerHTML = "pos: X: " + camera.position.x +
+						"; Y: " + camera.position.y +
+						"; Z: " + camera.position.z +
+						"<br />" +
+						"dir: X: " + dir.x +
+						"; Y: " + dir.y +
+						"; Z: " + dir.z;
 		}
 	};
 	

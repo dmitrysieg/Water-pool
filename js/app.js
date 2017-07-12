@@ -1,7 +1,7 @@
 require(['standardgenerator', 'harmonicgenerator', 'pool', 'pool3dview'],
 	function(StandardGenerator, HarmonicGenerator, Pool, PoolView) {
 		var pool = new Pool(
-			64, 64, 2,
+			20, 20, 5,
 		//	new HarmonicGenerator(
 		//		64, 64, 16, {
 		//			n: 5,
@@ -10,7 +10,7 @@ require(['standardgenerator', 'harmonicgenerator', 'pool', 'pool3dview'],
 		//			randomize: true
 		//		}
 			//)
-			new StandardGenerator(2)
+			new StandardGenerator(4)
 		);
 		pool.fill();
 		//new PoolTableView(pool, document.getElementById('pool'), 8, 8).render();
