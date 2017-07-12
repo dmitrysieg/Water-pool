@@ -28,18 +28,33 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 			for (var i = 0; i < this.getPool().height; i++) {
 				for (var j = 0; j < this.getPool().width; j++) {
 					
-					var geometry = new THREE.BoxGeometry(1, this.getPool().poolHeights[i][j], 1);
-					var material = new THREE.MeshPhongMaterial({
-						color: this.getColor(j, i),
+					var wmaterial, wheight;
+					var pmaterial = new THREE.MeshPhongMaterial({
+						color: 0x808080,
 						side: THREE.DoubleSide,
 						shading: THREE.FlatShading
 					});
-					var cube = new THREE.Mesh(geometry, material);
-					scene.add(cube);
-					cube.position.set(i, 0.5 * this.getPool().poolHeights[i][j], j);
+					var pheight = this.getPool().poolHeights[j][i];
+					if (this.getPool().hasWater && this.getPool().waterHeights[j][i] > -1) {
+						wmaterial = new THREE.MeshPhongMaterial({
+							color: 0x156289,
+							side: THREE.DoubleSide,
+							shading: THREE.FlatShading,
+							transparent: true,
+							opacity: 0.3
+						});
+						wheight = this.getPool().waterHeights[j][i] - this.getPool().poolHeights[j][i];
+						//console.log("W" + height);
+						var wgeometry = new THREE.BoxGeometry(1, wheight, 1);
+						var wcube = new THREE.Mesh(wgeometry, wmaterial);
+						scene.add(wcube);
+						wcube.position.set(i, pheight + 0.5 * wheight, j);
+					}
 					
-					//div.style["background-color"] = this.getColor(j, i);
-					//div.innerHTML = this.getPool().poolHeights[i][j];
+					var pgeometry = new THREE.BoxGeometry(1, pheight, 1);
+					var pcube = new THREE.Mesh(pgeometry, pmaterial);
+					scene.add(pcube);
+					pcube.position.set(i, 0.5 * pheight, j);
 				}
 			}
 		},

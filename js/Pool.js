@@ -5,32 +5,64 @@ define(['stack'], function(Stack) {
 		this.depth = d;
 		this.hasWater = false;
 		this.poolHeights = [];
-		for (var i = 0; i < this.height; i++) {
-			this.poolHeights[i] = [];
-			for (var j = 0; j < this.width; j++) {			
-				this.poolHeights[i][j] = generator.getHeight(j, i);
+		for (var j = 0; j < this.height; j++) {
+			this.poolHeights[j] = [];
+			for (var i = 0; i < this.width; i++) {			
+				this.poolHeights[j][i] = generator.getHeight(i, j);
 			}
 		}
+		console.info(JSON.stringify(this.poolHeights));
 		this.waterHeights = [];
-		for (var i = 0; i < this.height; i++) {
-			this.waterHeights[i] = [];
-			for (var j = 0; j < this.width; j++) {
-				this.waterHeights[i][j] = -1;
+		for (var j = 0; j < this.height; j++) {
+			this.waterHeights[j] = [];
+			for (var i = 0; i < this.width; i++) {
+				this.waterHeights[j][i] = -1;
 			}
 		}
 	};
 
 	Pool.prototype = {
+		iterate: function(f) {
+			for (var j = 0; j < this.height; j++) {
+				for (var i = 0; i < this.width; i++) {
+					f.call(this, this.poolHeights[j][i], this.waterHeights[j][i]);
+				}
+			}
+		},
 		fill: function() {
 			if (this.hasWater) {
 				return;
 			}
-			for (var i = 0; i < this.height; i++) {
-				for (var j = 0; j < this.width; j++) {
-					if (!this.isBoundary(j, i)) {
-						if (!this.findBoundary(j, i, this.poolHeights[i][j])) {
-							this.waterHeights[i][j] = this.poolHeights[i][j] + 1;
+			var maxPHeight = -1;
+			this.iterate(function(ph) {if (maxPHeight < ph) {maxPHeight = ph}});
+			
+			for (var j = 0; j < this.height; j++) {
+				for (var i = 0; i < this.width; i++) {
+					var lowest = this.poolHeights[j][i] + 1,
+						highest = maxPHeight;
+					var lastPredictedWHeight = maxPHeight,
+						nextPredictedWHeight = lowest + Math.floor((highest - lowest) / 2);
+						
+					var lastResultPoored = true;
+					while (Math.abs(nextPredictedWHeight - lastPredictedWHeight) > 0) {
+						
+						var diff = Math.abs(nextPredictedWHeight - lastPredictedWHeight);
+
+						if (this.isBoundary(i, j) || this.findBoundary(i, j, nextPredictedWHeight)) {
+							lastPredictedWHeight = nextPredictedWHeight;
+							nextPredictedWHeight -= Math.floor(diff / 2);
+							lastResultPoored = true;
+							console.log(j + " " + i + " " + nextPredictedWHeight + " poored");
+						} else {
+							lastPredictedWHeight = nextPredictedWHeight;
+							nextPredictedWHeight += Math.floor(diff / 2);
+							lastResultPoored = false;
+							console.log(j + " " + i + " " + nextPredictedWHeight + " not poored");
 						}
+					}
+					if (!lastResultPoored) {
+						this.waterHeights[j][i] = lastPredictedWHeight;
+						console.log("WH " + this.waterHeights[j][i] + " PH " + this.poolHeights[j][i]);
 					}
 				}
 			}
@@ -38,10 +70,10 @@ define(['stack'], function(Stack) {
 		},
 		findBoundary: function(x, y, h) {
 			var passed = [];
-			for (var i = 0; i < this.height; i++) {
-				passed[i] = [];
-				for (var j = 0; j < this.width; j++) {
-					passed[i][j] = false;
+			for (var j = 0; j < this.height; j++) {
+				passed[j] = [];
+				for (var i = 0; i < this.width; i++) {
+					passed[j][i] = false;
 				}
 			}
 			var stack = new Stack();
@@ -55,7 +87,7 @@ define(['stack'], function(Stack) {
 				
 				passed[curr._y][curr._x] = true;
 				for (var next = this.getNext(curr._x, curr._y), k = 0; k < next.length; k++) {
-					if (this.poolHeights[next[k]._y][next[k]._x] <= this.poolHeights[curr._y][curr._x] && !passed[next[k]._y][next[k]._x]) {
+					if (this.poolHeights[next[k]._y][next[k]._x] < h && !passed[next[k]._y][next[k]._x]) {
 						stack.push(next[k]);
 					}
 				}
