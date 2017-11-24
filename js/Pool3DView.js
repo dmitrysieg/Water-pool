@@ -22,6 +22,11 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 			}
 		},
 		setupPool: function() {
+		    this.groups = {
+		        pool: new THREE.Group(),
+		        water: new THREE.Group()
+		    };
+
 			for (var i = 0; i < this.getPool().height; i++) {
 				for (var j = 0; j < this.getPool().width; j++) {
 					
@@ -44,16 +49,18 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 						//console.log("W" + height);
 						var wgeometry = new THREE.BoxGeometry(1, wheight, 1);
 						var wcube = new THREE.Mesh(wgeometry, wmaterial);
-						this.scene.add(wcube);
+						this.groups.water.add(wcube);
 						wcube.position.set(i, pheight + 0.5 * wheight, j);
 					}
 					
 					var pgeometry = new THREE.BoxGeometry(1, pheight, 1);
 					var pcube = new THREE.Mesh(pgeometry, pmaterial);
-					this.scene.add(pcube);
+					this.groups.pool.add(pcube);
 					pcube.position.set(i, 0.5 * pheight, j);
 				}
 			}
+			this.scene.add(this.groups.pool);
+			this.scene.add(this.groups.water);
 		},
 		setupScene: function() {
 			this.renderer = new THREE.WebGLRenderer({antialias:true});
@@ -80,6 +87,7 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 			this.scene.add(lights[2]);
 			
 			this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+			this.controls.center = new THREE.Vector3(this.getPool().height, 0, this.getPool().width);
 		},
 		init: function() {
 			this.setupScene();
