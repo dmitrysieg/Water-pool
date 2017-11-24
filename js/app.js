@@ -1,5 +1,18 @@
 require(['standardgenerator', 'harmonicgenerator', 'pool', 'pool3dview', 'jsongenerator'],
 	function(StandardGenerator, HarmonicGenerator, Pool, PoolView, JsonGenerator) {
+
+	    function createUI() {
+	        var uiPanel = document.createElement("div");
+	        uiPanel.id = "infopanel";
+
+	        var textPanel = document.createElement("p");
+	        textPanel.id = "infotext";
+	        uiPanel.appendChild(textPanel);
+
+	        return uiPanel;
+	    };
+
+		document.body.appendChild(createUI());
 		var pool = new Pool(
 			16, 16, 5,
 			new HarmonicGenerator(
@@ -15,6 +28,8 @@ require(['standardgenerator', 'harmonicgenerator', 'pool', 'pool3dview', 'jsonge
 		);
 		pool.fill();
 		//new PoolTableView(pool, document.getElementById('pool'), 8, 8).render();
-		new PoolView(pool, document.getElementById('pool'), 8, 8).render();
+		var poolView = new PoolView(pool, document.body, 8, 8);
+		poolView.init();
+		poolView.animate();
 	}
 );
