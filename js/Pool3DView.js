@@ -25,15 +25,6 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 		getEl: function() {
 			return this.el;
 		},
-		// unused; todo use or remove
-		getColor: function(x, y) {
-			if (this.getPool().hasWater && this.getPool().waterHeights[y][x] > -1) {
-				return 0x156289;
-			} else {
-				var comp = Math.floor(256.0 / this.getPool().depth * this.getPool().poolHeights[y][x]);
-				return 0x808080;
-			}
-		},
 		setupPool: function() {
 		    this.groups = {
 		        pool: new THREE.Group(),
@@ -64,13 +55,25 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 			this.scene.add(this.groups.water);
 		},
 		setupScene: function() {
+			var WIDTH = document.body.clientWidth,
+			    HEIGHT = document.body.clientHeight;
 			this.renderer = new THREE.WebGLRenderer({antialias:true});
-			this.renderer.setSize(window.innerWidth, window.innerHeight);
+			this.renderer.setSize(WIDTH, HEIGHT);
 			this.getEl().appendChild(this.renderer.domElement);
 			
-			this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+			this.camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
             this.camera.position.set(-15, 35, -7.5);
             this.camera.lookAt(new THREE.Vector3(0.56, -0.72, 0.40));
+
+            var renderer = this.renderer,
+                camera = this.camera;
+            window.addEventListener('resize', function() {
+                var WIDTH = document.body.clientWidth,
+                    HEIGHT = document.body.clientHeight;
+                renderer.setSize(WIDTH, HEIGHT);
+                camera.aspect = WIDTH / HEIGHT;
+                camera.updateProjectionMatrix();
+            });
 
 			this.scene = new THREE.Scene();
 
@@ -88,7 +91,11 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 			this.scene.add(lights[2]);
 			
 			this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-			this.controls.center = new THREE.Vector3(this.getPool().height, 0, this.getPool().width);
+			this.controls.center = new THREE.Vector3(
+			    0.5 * this.getPool().height,
+			    0.0,
+			    0.5 * this.getPool().width
+            );
 		},
 		init: function() {
 			this.setupScene();

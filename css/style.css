@@ -1,7 +1,16 @@
 
 .cell div {width:14px;max-width:14px;height:14px;max-height:14px;}
 
-body {margin: 0px; padding: 0px;}
+html {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    min-height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
 
 #infopanel {
     position: absolute;
