@@ -1,9 +1,7 @@
 define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
-	var Pool3DView = function(pool, el, w, h) {
+	var Pool3DView = function(pool, el) {
 		this.pool = pool;
 		this.el = el;
-		this.w = w;
-		this.h = h;
 		this.materials = {
 		    water: new THREE.MeshPhongMaterial({
                 color: 0x156289,
@@ -27,6 +25,7 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 		getEl: function() {
 			return this.el;
 		},
+		// unused; todo use or remove
 		getColor: function(x, y) {
 			if (this.getPool().hasWater && this.getPool().waterHeights[y][x] > -1) {
 				return 0x156289;
@@ -44,21 +43,21 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 			for (var i = 0; i < this.getPool().height; i++) {
 				for (var j = 0; j < this.getPool().width; j++) {
 					
-					var pheight = this.getPool().poolHeights[j][i];
+					var poolHeight = this.getPool().poolHeights[j][i];
 					if (this.getPool().hasWater && this.getPool().waterHeights[j][i] > -1) {
 
-						var wheight = this.getPool().waterHeights[j][i] - this.getPool().poolHeights[j][i];
-						//console.log("W" + height);
-						var wgeometry = new THREE.BoxGeometry(1, wheight, 1);
-						var wcube = new THREE.Mesh(wgeometry, this.materials.water);
-						this.groups.water.add(wcube);
-						wcube.position.set(i, pheight + 0.5 * wheight, j);
+						var waterHeight = this.getPool().waterHeights[j][i] - this.getPool().poolHeights[j][i];
+
+						var waterGeometry = new THREE.BoxGeometry(1, waterHeight, 1);
+						var waterMesh = new THREE.Mesh(waterGeometry, this.materials.water);
+						this.groups.water.add(waterMesh);
+						waterMesh.position.set(i, poolHeight + 0.5 * waterHeight, j);
 					}
 					
-					var pgeometry = new THREE.BoxGeometry(1, pheight, 1);
-					var pcube = new THREE.Mesh(pgeometry, this.materials.pool);
-					this.groups.pool.add(pcube);
-					pcube.position.set(i, 0.5 * pheight, j);
+					var poolGeometry = new THREE.BoxGeometry(1, poolHeight, 1);
+					var poolMesh = new THREE.Mesh(poolGeometry, this.materials.pool);
+					this.groups.pool.add(poolMesh);
+					poolMesh.position.set(i, 0.5 * poolHeight, j);
 				}
 			}
 			this.scene.add(this.groups.pool);

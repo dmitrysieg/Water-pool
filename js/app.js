@@ -28,7 +28,7 @@ require(['standardgenerator', 'harmonicgenerator', 'pool', 'pool3dview', 'jsonge
 		);
 		pool.fill();
 		//new PoolTableView(pool, document.getElementById('pool'), 8, 8).render();
-		var poolView = new PoolView(pool, document.body, 8, 8);
+		var poolView = new PoolView(pool, document.body);
 		poolView.init();
 		poolView.animate();
 	}
