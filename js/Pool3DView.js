@@ -4,6 +4,20 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 		this.el = el;
 		this.w = w;
 		this.h = h;
+		this.materials = {
+		    water: new THREE.MeshPhongMaterial({
+                color: 0x156289,
+                side: THREE.DoubleSide,
+                shading: THREE.FlatShading,
+                transparent: true,
+                opacity: 0.3
+            }),
+            pool: new THREE.MeshPhongMaterial({
+                color: 0x808080,
+                side: THREE.DoubleSide,
+                shading: THREE.FlatShading
+            })
+        };
 	};
 
 	Pool3DView.prototype = {
@@ -30,31 +44,19 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 			for (var i = 0; i < this.getPool().height; i++) {
 				for (var j = 0; j < this.getPool().width; j++) {
 					
-					var wmaterial, wheight;
-					var pmaterial = new THREE.MeshPhongMaterial({
-						color: 0x808080,
-						side: THREE.DoubleSide,
-						shading: THREE.FlatShading
-					});
 					var pheight = this.getPool().poolHeights[j][i];
 					if (this.getPool().hasWater && this.getPool().waterHeights[j][i] > -1) {
-						wmaterial = new THREE.MeshPhongMaterial({
-							color: 0x156289,
-							side: THREE.DoubleSide,
-							shading: THREE.FlatShading,
-							transparent: true,
-							opacity: 0.3
-						});
-						wheight = this.getPool().waterHeights[j][i] - this.getPool().poolHeights[j][i];
+
+						var wheight = this.getPool().waterHeights[j][i] - this.getPool().poolHeights[j][i];
 						//console.log("W" + height);
 						var wgeometry = new THREE.BoxGeometry(1, wheight, 1);
-						var wcube = new THREE.Mesh(wgeometry, wmaterial);
+						var wcube = new THREE.Mesh(wgeometry, this.materials.water);
 						this.groups.water.add(wcube);
 						wcube.position.set(i, pheight + 0.5 * wheight, j);
 					}
 					
 					var pgeometry = new THREE.BoxGeometry(1, pheight, 1);
-					var pcube = new THREE.Mesh(pgeometry, pmaterial);
+					var pcube = new THREE.Mesh(pgeometry, this.materials.pool);
 					this.groups.pool.add(pcube);
 					pcube.position.set(i, 0.5 * pheight, j);
 				}
@@ -74,9 +76,9 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 			this.scene = new THREE.Scene();
 
 			var lights = [];
-			lights[0] = new THREE.PointLight(0xffffff, 1, 0);
-			lights[1] = new THREE.PointLight(0xffffff, 1, 0);
-			lights[2] = new THREE.PointLight(0xffffff, 1, 0);
+			lights[0] = new THREE.PointLight(0xDDDDDD, 1, 0);
+			lights[1] = new THREE.PointLight(0xDDDDDD, 1, 0);
+			lights[2] = new THREE.PointLight(0xDDDDDD, 1, 0);
 
 			lights[0].position.set(0, 200, 0);
 			lights[1].position.set(100, 200, 100);
