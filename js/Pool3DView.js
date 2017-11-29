@@ -31,26 +31,167 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 		        water: new THREE.Group()
 		    };
 
-			for (var i = 0; i < this.getPool().height; i++) {
-				for (var j = 0; j < this.getPool().width; j++) {
-					
-					var poolHeight = this.getPool().poolHeights[j][i];
-					if (this.getPool().hasWater && this.getPool().waterHeights[j][i] > -1) {
+			var poolGeometry = new THREE.Geometry();
+			this.verticesIndices = {
+			    top: []
+			};
+			var vi = 0;
+			var height = this.getPool().height,
+			    width = this.getPool().width;
 
-						var waterHeight = this.getPool().waterHeights[j][i] - this.getPool().poolHeights[j][i];
+			for (var i = 0; i < height; i++) {
 
-						var waterGeometry = new THREE.BoxGeometry(1, waterHeight, 1);
-						var waterMesh = new THREE.Mesh(waterGeometry, this.materials.water);
-						this.groups.water.add(waterMesh);
-						waterMesh.position.set(i, poolHeight + 0.5 * waterHeight, j);
-					}
-					
-					var poolGeometry = new THREE.BoxGeometry(1, poolHeight, 1);
-					var poolMesh = new THREE.Mesh(poolGeometry, this.materials.pool);
-					this.groups.pool.add(poolMesh);
-					poolMesh.position.set(i, 0.5 * poolHeight, j);
-				}
-			}
+			    // init 2d array
+			    this.verticesIndices.top[i] = [];
+
+                for (var j = 0; j < width; j++) {
+
+                    var poolHeight = this.getPool().poolHeights[i][j];
+
+                    // bypassing clockwise
+                    poolGeometry.vertices.push(new THREE.Vector3(i    , poolHeight, j    ));
+                    poolGeometry.vertices.push(new THREE.Vector3(i    , poolHeight, j + 1));
+                    poolGeometry.vertices.push(new THREE.Vector3(i + 1, poolHeight, j + 1));
+                    poolGeometry.vertices.push(new THREE.Vector3(i + 1, poolHeight, j    ));
+
+                    this.verticesIndices.top[i][j] = [
+                        vi++, vi++, vi++, vi++
+                    ];
+
+                    poolGeometry.faces.push(new THREE.Face3(
+                        this.verticesIndices.top[i][j][0],
+                        this.verticesIndices.top[i][j][1],
+                        this.verticesIndices.top[i][j][2]
+                    ));
+                    poolGeometry.faces.push(new THREE.Face3(
+                        this.verticesIndices.top[i][j][0],
+                        this.verticesIndices.top[i][j][2],
+                        this.verticesIndices.top[i][j][3]
+                    ));
+
+                    // previous laying vertices exist, merging sides
+                    // if pool heights match, skip this
+                    if (i > 0 && this.getPool().poolHeights[i - 1][j] != poolHeight) {
+                        poolGeometry.faces.push(new THREE.Face3(
+                            this.verticesIndices.top[i    ][j][1],
+                            this.verticesIndices.top[i    ][j][0],
+                            this.verticesIndices.top[i - 1][j][3]
+                        ));
+                        poolGeometry.faces.push(new THREE.Face3(
+                            this.verticesIndices.top[i    ][j][1],
+                            this.verticesIndices.top[i - 1][j][3],
+                            this.verticesIndices.top[i - 1][j][2]
+                        ));
+                    }
+
+                    // the same for j
+                    if (j > 0 && this.getPool().poolHeights[i][j - 1] != poolHeight) {
+                        poolGeometry.faces.push(new THREE.Face3(
+                            this.verticesIndices.top[i][j    ][0],
+                            this.verticesIndices.top[i][j    ][3],
+                            this.verticesIndices.top[i][j - 1][2]
+                        ));
+                        poolGeometry.faces.push(new THREE.Face3(
+                            this.verticesIndices.top[i][j    ][0],
+                            this.verticesIndices.top[i][j - 1][2],
+                            this.verticesIndices.top[i][j - 1][1]
+                        ));
+                    }
+
+                    // water in the same cycle
+                    if (this.getPool().hasWater && this.getPool().waterHeights[i][j] > -1) {
+
+                        var waterHeight = this.getPool().waterHeights[i][j] - this.getPool().poolHeights[i][j];
+
+                        var waterGeometry = new THREE.BoxGeometry(1, waterHeight, 1);
+                        var waterMesh = new THREE.Mesh(waterGeometry, this.materials.water);
+                        this.groups.water.add(waterMesh);
+                        waterMesh.position.set(i + 0.5, poolHeight + 0.5 * waterHeight, j + 0.5);
+                    }
+                }
+            }
+
+            // i == 0 and i == height side face
+            for (var j = 0; j < width; j++) {
+                poolGeometry.vertices.push(new THREE.Vector3(0, 0, j));
+                poolGeometry.vertices.push(new THREE.Vector3(0, 0, j + 1));
+                vi += 2;
+                poolGeometry.faces.push(new THREE.Face3(
+                    this.verticesIndices.top[0][j][0],
+                    this.verticesIndices.top[0][j][1],
+                    vi - 1 // j + 1
+                ));
+                poolGeometry.faces.push(new THREE.Face3(
+                    this.verticesIndices.top[0][j][0],
+                    vi - 1, // j + 1
+                    vi - 2  // j
+                ));
+
+                poolGeometry.vertices.push(new THREE.Vector3(height, 0, j));
+                poolGeometry.vertices.push(new THREE.Vector3(height, 0, j + 1));
+                vi += 2;
+                poolGeometry.faces.push(new THREE.Face3(
+                    this.verticesIndices.top[height - 1][j][3],
+                    this.verticesIndices.top[height - 1][j][2],
+                    vi - 1 // j + 1
+                ));
+                poolGeometry.faces.push(new THREE.Face3(
+                    this.verticesIndices.top[height - 1][j][3],
+                    vi - 1, // j + 1
+                    vi - 2  // j
+                ));
+            }
+
+            // j == 0 and j == width side face
+            for (var i = 0; i < height; i++) {
+                poolGeometry.vertices.push(new THREE.Vector3(i,     0, 0));
+                poolGeometry.vertices.push(new THREE.Vector3(i + 1, 0, 0));
+                vi += 2;
+                poolGeometry.faces.push(new THREE.Face3(
+                    this.verticesIndices.top[i][0][0],
+                    this.verticesIndices.top[i][0][3],
+                    vi - 1 // i + 1
+                ));
+                poolGeometry.faces.push(new THREE.Face3(
+                    this.verticesIndices.top[i][0][0],
+                    vi - 1, // i + 1
+                    vi - 2  // i
+                ));
+
+                poolGeometry.vertices.push(new THREE.Vector3(i,     0, width));
+                poolGeometry.vertices.push(new THREE.Vector3(i + 1, 0, width));
+                vi += 2;
+                poolGeometry.faces.push(new THREE.Face3(
+                    this.verticesIndices.top[i][width - 1][2],
+                    this.verticesIndices.top[i][width - 1][1],
+                    vi - 2 // i
+                ));
+                poolGeometry.faces.push(new THREE.Face3(
+                    this.verticesIndices.top[i][width - 1][2],
+                    vi - 2, // i
+                    vi - 1  // i + 1
+                ));
+            }
+
+            // bottom, clockwise looking from above
+            poolGeometry.vertices.push(new THREE.Vector3(0,      0, 0));
+            poolGeometry.vertices.push(new THREE.Vector3(0,      0, width));
+            poolGeometry.vertices.push(new THREE.Vector3(height, 0, width));
+            poolGeometry.vertices.push(new THREE.Vector3(height, 0, 0));
+            poolGeometry.faces.push(new THREE.Face3(
+                vi,
+                vi + 1,
+                vi + 2
+            ));
+            poolGeometry.faces.push(new THREE.Face3(
+                vi,
+                vi + 2,
+                vi + 3
+            ));
+
+            var poolMesh = new THREE.Mesh(poolGeometry, this.materials.pool);
+            this.groups.pool.add(poolMesh);
+
 			this.scene.add(this.groups.pool);
 			this.scene.add(this.groups.water);
 		},
