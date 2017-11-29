@@ -25,6 +25,14 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 		getEl: function() {
 			return this.el;
 		},
+		/**
+		 * @param faces - Array of geometry.faces.
+		 * @param v - Array of vertices in a clockwise order.
+		 */
+		drawFace4: function(faces, v) {
+		    faces.push(new THREE.Face3(v[0], v[1], v[2]));
+            faces.push(new THREE.Face3(v[0], v[2], v[3]));
+		},
 		setupPool: function() {
 		    this.groups = {
 		        pool: new THREE.Group(),
@@ -58,44 +66,32 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
                         vi++, vi++, vi++, vi++
                     ];
 
-                    poolGeometry.faces.push(new THREE.Face3(
+                    this.drawFace4(poolGeometry.faces, [
                         this.verticesIndices.top[i][j][0],
                         this.verticesIndices.top[i][j][1],
-                        this.verticesIndices.top[i][j][2]
-                    ));
-                    poolGeometry.faces.push(new THREE.Face3(
-                        this.verticesIndices.top[i][j][0],
                         this.verticesIndices.top[i][j][2],
                         this.verticesIndices.top[i][j][3]
-                    ));
+                    ]);
 
                     // previous laying vertices exist, merging sides
                     // if pool heights match, skip this
                     if (i > 0 && this.getPool().poolHeights[i - 1][j] != poolHeight) {
-                        poolGeometry.faces.push(new THREE.Face3(
+                        this.drawFace4(poolGeometry.faces, [
                             this.verticesIndices.top[i    ][j][1],
                             this.verticesIndices.top[i    ][j][0],
-                            this.verticesIndices.top[i - 1][j][3]
-                        ));
-                        poolGeometry.faces.push(new THREE.Face3(
-                            this.verticesIndices.top[i    ][j][1],
                             this.verticesIndices.top[i - 1][j][3],
                             this.verticesIndices.top[i - 1][j][2]
-                        ));
+                        ]);
                     }
 
                     // the same for j
                     if (j > 0 && this.getPool().poolHeights[i][j - 1] != poolHeight) {
-                        poolGeometry.faces.push(new THREE.Face3(
+                        this.drawFace4(poolGeometry.faces, [
                             this.verticesIndices.top[i][j    ][0],
                             this.verticesIndices.top[i][j    ][3],
-                            this.verticesIndices.top[i][j - 1][2]
-                        ));
-                        poolGeometry.faces.push(new THREE.Face3(
-                            this.verticesIndices.top[i][j    ][0],
                             this.verticesIndices.top[i][j - 1][2],
                             this.verticesIndices.top[i][j - 1][1]
-                        ));
+                        ]);
                     }
 
                     // water in the same cycle
@@ -116,30 +112,22 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
                 poolGeometry.vertices.push(new THREE.Vector3(0, 0, j));
                 poolGeometry.vertices.push(new THREE.Vector3(0, 0, j + 1));
                 vi += 2;
-                poolGeometry.faces.push(new THREE.Face3(
+                this.drawFace4(poolGeometry.faces, [
                     this.verticesIndices.top[0][j][0],
                     this.verticesIndices.top[0][j][1],
-                    vi - 1 // j + 1
-                ));
-                poolGeometry.faces.push(new THREE.Face3(
-                    this.verticesIndices.top[0][j][0],
-                    vi - 1, // j + 1
+                    vi - 1, // j + 1,
                     vi - 2  // j
-                ));
+                ]);
 
                 poolGeometry.vertices.push(new THREE.Vector3(height, 0, j));
                 poolGeometry.vertices.push(new THREE.Vector3(height, 0, j + 1));
                 vi += 2;
-                poolGeometry.faces.push(new THREE.Face3(
+                this.drawFace4(poolGeometry.faces, [
                     this.verticesIndices.top[height - 1][j][3],
                     this.verticesIndices.top[height - 1][j][2],
-                    vi - 1 // j + 1
-                ));
-                poolGeometry.faces.push(new THREE.Face3(
-                    this.verticesIndices.top[height - 1][j][3],
-                    vi - 1, // j + 1
+                    vi - 1, // j + 1,
                     vi - 2  // j
-                ));
+                ]);
             }
 
             // j == 0 and j == width side face
@@ -147,30 +135,22 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
                 poolGeometry.vertices.push(new THREE.Vector3(i,     0, 0));
                 poolGeometry.vertices.push(new THREE.Vector3(i + 1, 0, 0));
                 vi += 2;
-                poolGeometry.faces.push(new THREE.Face3(
+                this.drawFace4(poolGeometry.faces, [
                     this.verticesIndices.top[i][0][0],
                     this.verticesIndices.top[i][0][3],
-                    vi - 1 // i + 1
-                ));
-                poolGeometry.faces.push(new THREE.Face3(
-                    this.verticesIndices.top[i][0][0],
-                    vi - 1, // i + 1
+                    vi - 1, // i + 1,
                     vi - 2  // i
-                ));
+                ]);
 
                 poolGeometry.vertices.push(new THREE.Vector3(i,     0, width));
                 poolGeometry.vertices.push(new THREE.Vector3(i + 1, 0, width));
                 vi += 2;
-                poolGeometry.faces.push(new THREE.Face3(
+                this.drawFace4(poolGeometry.faces, [
                     this.verticesIndices.top[i][width - 1][2],
                     this.verticesIndices.top[i][width - 1][1],
-                    vi - 2 // i
-                ));
-                poolGeometry.faces.push(new THREE.Face3(
-                    this.verticesIndices.top[i][width - 1][2],
-                    vi - 2, // i
+                    vi - 2, // i,
                     vi - 1  // i + 1
-                ));
+                ]);
             }
 
             // bottom, clockwise looking from above
@@ -178,16 +158,12 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
             poolGeometry.vertices.push(new THREE.Vector3(0,      0, width));
             poolGeometry.vertices.push(new THREE.Vector3(height, 0, width));
             poolGeometry.vertices.push(new THREE.Vector3(height, 0, 0));
-            poolGeometry.faces.push(new THREE.Face3(
+            this.drawFace4(poolGeometry.faces, [
                 vi,
                 vi + 1,
-                vi + 2
-            ));
-            poolGeometry.faces.push(new THREE.Face3(
-                vi,
                 vi + 2,
                 vi + 3
-            ));
+            ]);
 
             var poolMesh = new THREE.Mesh(poolGeometry, this.materials.pool);
             this.groups.pool.add(poolMesh);
