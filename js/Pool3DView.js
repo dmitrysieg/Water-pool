@@ -5,14 +5,12 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 		this.materials = {
 		    water: new THREE.MeshPhongMaterial({
                 color: 0x156289,
-                side: THREE.DoubleSide,
                 shading: THREE.FlatShading,
                 transparent: true,
                 opacity: 0.3
             }),
             pool: new THREE.MeshPhongMaterial({
                 color: 0x808080,
-                side: THREE.DoubleSide,
                 shading: THREE.FlatShading
             })
         };
@@ -113,10 +111,10 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
                 poolGeometry.vertices.push(new THREE.Vector3(0, 0, j + 1));
                 vi += 2;
                 this.drawFace4(poolGeometry.faces, [
-                    this.verticesIndices.top[0][j][0],
                     this.verticesIndices.top[0][j][1],
-                    vi - 1, // j + 1,
-                    vi - 2  // j
+                    this.verticesIndices.top[0][j][0],
+                    vi - 2, // j
+                    vi - 1  // j + 1
                 ]);
 
                 poolGeometry.vertices.push(new THREE.Vector3(height, 0, j));
@@ -125,7 +123,7 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
                 this.drawFace4(poolGeometry.faces, [
                     this.verticesIndices.top[height - 1][j][3],
                     this.verticesIndices.top[height - 1][j][2],
-                    vi - 1, // j + 1,
+                    vi - 1, // j + 1
                     vi - 2  // j
                 ]);
             }
@@ -138,7 +136,7 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
                 this.drawFace4(poolGeometry.faces, [
                     this.verticesIndices.top[i][0][0],
                     this.verticesIndices.top[i][0][3],
-                    vi - 1, // i + 1,
+                    vi - 1, // i + 1
                     vi - 2  // i
                 ]);
 
@@ -148,16 +146,16 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
                 this.drawFace4(poolGeometry.faces, [
                     this.verticesIndices.top[i][width - 1][2],
                     this.verticesIndices.top[i][width - 1][1],
-                    vi - 2, // i,
+                    vi - 2, // i
                     vi - 1  // i + 1
                 ]);
             }
 
-            // bottom, clockwise looking from above
+            // bottom, counterclockwise looking from above
             poolGeometry.vertices.push(new THREE.Vector3(0,      0, 0));
-            poolGeometry.vertices.push(new THREE.Vector3(0,      0, width));
-            poolGeometry.vertices.push(new THREE.Vector3(height, 0, width));
             poolGeometry.vertices.push(new THREE.Vector3(height, 0, 0));
+            poolGeometry.vertices.push(new THREE.Vector3(height, 0, width));
+            poolGeometry.vertices.push(new THREE.Vector3(0     , 0, width));
             this.drawFace4(poolGeometry.faces, [
                 vi,
                 vi + 1,
