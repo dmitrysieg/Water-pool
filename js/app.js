@@ -1,5 +1,5 @@
-require(['standardgenerator', 'harmonicgenerator', 'pool', 'pool3dview', 'jsongenerator'],
-	function(StandardGenerator, HarmonicGenerator, Pool, PoolView, JsonGenerator) {
+require(['standardgenerator', 'harmonicgenerator', 'pool', 'pool3dview', 'jsongenerator', 'filteringgenerator'],
+	function(StandardGenerator, HarmonicGenerator, Pool, PoolView, JsonGenerator, FilteringGenerator) {
 
 	    function createUI() {
 	        var uiPanel = document.createElement("div");
@@ -14,16 +14,16 @@ require(['standardgenerator', 'harmonicgenerator', 'pool', 'pool3dview', 'jsonge
 
 		document.body.appendChild(createUI());
 		var pool = new Pool(
-			16, 20, 5,
-			new HarmonicGenerator(
+			100, 100, 0,
+			/*new HarmonicGenerator(
 				16, 20, 16, {
 					n: 4,
 					x: {a: [-0.5, -0.5, -0.8, -0.5], b: [0.0, 0.0, 0.0, 0.5]},
 					y: {a: [-0.5, -0.5, -0.8, -0.5], b: [0.0, 0.0, 0.0, 0.5]},
 					randomize: false
 				}
-			)
-			//new StandardGenerator(2)
+			)*/
+			new FilteringGenerator(100, 100, 10, 2),
             /*new JsonGenerator("[[2,1,2,2,1,2,1,2,1,2,1,2,1,2,1,2],[2,2,2,1,2,1,2,1,2,1,1,1,2,2,2,2],[2,2,1,1,1,1,1,1,2,1,2,1,1,2,1,2],[2,2,2,2,2,2,2,2,1,1,2,2,1,1,1,2],[2,2,1,2,2,2,1,2,2,1,2,1,2,2,2,1],[1,2,2,2,1,1,1,1,2,2,1,1,2,2,1,1],[2,2,1,1,1,1,1,2,2,2,1,2,1,1,2,1],[1,1,1,2,1,1,1,2,2,1,1,2,2,1,2,2],[2,2,1,1,2,2,1,2,1,1,2,1,2,2,2,2],[1,1,1,2,2,1,1,2,1,2,2,2,2,2,1,1],[1,2,1,2,2,1,2,2,1,2,1,2,2,2,1,1],[1,1,2,1,2,2,2,2,1,2,1,1,2,2,2,1],[1,1,1,2,1,1,2,1,1,2,1,1,1,2,1,1],[1,1,2,1,1,1,1,2,1,2,2,2,1,1,1,2],[2,1,2,1,1,2,1,1,1,2,1,2,1,2,2,1],[1,1,1,2,2,1,2,2,1,1,2,2,1,2,2,2]]")*/
 		);
 		pool.fill();

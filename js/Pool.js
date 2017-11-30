@@ -66,7 +66,7 @@ define(['stack'], function(Stack) {
 
                 if (this.isBoundary(i, j) || this.findBoundary(i, j, center)) {
 
-                    console.log(j + " " + i + " " + center + " poored");
+                    //console.log(j + " " + i + " " + center + " poored");
                     highest = center;
                     lastCenter = center;
                     center = Math.floor((lowest + highest) / 2);
@@ -75,7 +75,7 @@ define(['stack'], function(Stack) {
 
                 } else {
 
-                    console.log(j + " " + i + " " + center + " not poored");
+                    //console.log(j + " " + i + " " + center + " not poored");
                     lowest = center;
                     lastCenter = center;
                     center = Math.floor((lowest + highest) / 2);
@@ -85,7 +85,7 @@ define(['stack'], function(Stack) {
             }
             if (!lastResultPoored) {
                 this.waterHeights[j][i] = lastCenter;
-                console.log("WH " + this.waterHeights[j][i] + " PH " + poolHeight);
+                //console.log("WH " + this.waterHeights[j][i] + " PH " + poolHeight);
             }
 		},
 		findBoundary: function(x, y, h) {
