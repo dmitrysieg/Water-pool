@@ -1,8 +1,18 @@
 define(['stack'], function(Stack) {
-	var Pool = function(w, h, d, generator) {
-		this.width = w;
-		this.height = h;
-		this.depth = d;
+
+	/**
+	 * Create a Pool object.
+	 * @param width - Width of the surface in units.
+	 * @param height - Another side length in units.
+	 * @param depth - Max depth allowed for generator.
+	 * @param generator - Generator interface object.
+	 * * contract:
+	 * * getHeight: function(x, y) - must return an integer between 1 and depth + 1.
+	 */
+	var Pool = function(width, height, depth, generator) {
+		this.width = width;
+		this.height = height;
+		this.depth = depth;
 		this.hasWater = false;
 		this.poolHeights = [];
 		for (var j = 0; j < this.height; j++) {
@@ -25,7 +35,7 @@ define(['stack'], function(Stack) {
 		iterate: function(f) {
 			for (var j = 0; j < this.height; j++) {
 				for (var i = 0; i < this.width; i++) {
-					f.call(this, this.poolHeights[j][i], this.waterHeights[j][i]);
+					f.call(this, this.poolHeights[j][i], i, j);
 				}
 			}
 		},
@@ -33,50 +43,50 @@ define(['stack'], function(Stack) {
 			if (this.hasWater) {
 				return;
 			}
-			var maxPHeight = -1;
-			this.iterate(function(ph) {if (maxPHeight < ph) {maxPHeight = ph}});
-			
-			for (var j = 0; j < this.height; j++) {
-				for (var i = 0; i < this.width; i++) {
-                    
-                    if (this.poolHeights[j][i] == maxPHeight) {
-                        continue;
-                    }
-                    
-					var lowest = this.poolHeights[j][i] + 1,
-						highest = maxPHeight;
-					var lastCenter = maxPHeight + 1, // some unreachable value, uncomparable with the "center" value at the beginning
-						center = Math.floor((lowest + highest) / 2);
-						
-					var lastResultPoored = true;
-					while (Math.abs(lastCenter - center) > 0) {
-						
-						if (this.isBoundary(i, j) || this.findBoundary(i, j, center)) {
-                            
-                            console.log(j + " " + i + " " + center + " poored");
-                            highest = center;
-							lastCenter = center;
-							center = Math.floor((lowest + highest) / 2);
-                            
-							lastResultPoored = true;
-							
-						} else {
-							
-                            console.log(j + " " + i + " " + center + " not poored");
-                            lowest = center;
-                            lastCenter = center;
-							center = Math.floor((lowest + highest) / 2);
-                            
-							lastResultPoored = false;
-						}
-					}
-					if (!lastResultPoored) {
-						this.waterHeights[j][i] = lastCenter;
-						console.log("WH " + this.waterHeights[j][i] + " PH " + this.poolHeights[j][i]);
-					}
-				}
-			}
+			this.maxPHeight = -1;
+			this.iterate(function(ph) {if (this.maxPHeight < ph) {this.maxPHeight = ph}});
+
+			this.iterate(this.pourSingleColumn);
 			this.hasWater = true;
+		},
+		pourSingleColumn: function(poolHeight, i, j) {
+
+		    // guaranteed to be poured out
+		    if (poolHeight == this.maxPHeight) {
+                return;
+            }
+
+            var lowest = poolHeight + 1,
+                highest = this.maxPHeight;
+            var lastCenter = this.maxPHeight + 1, // some unreachable value, uncomparable with the "center" value at the beginning
+                center = Math.floor((lowest + highest) / 2);
+
+            var lastResultPoored = true;
+            while (Math.abs(lastCenter - center) > 0) {
+
+                if (this.isBoundary(i, j) || this.findBoundary(i, j, center)) {
+
+                    console.log(j + " " + i + " " + center + " poored");
+                    highest = center;
+                    lastCenter = center;
+                    center = Math.floor((lowest + highest) / 2);
+
+                    lastResultPoored = true;
+
+                } else {
+
+                    console.log(j + " " + i + " " + center + " not poored");
+                    lowest = center;
+                    lastCenter = center;
+                    center = Math.floor((lowest + highest) / 2);
+
+                    lastResultPoored = false;
+                }
+            }
+            if (!lastResultPoored) {
+                this.waterHeights[j][i] = lastCenter;
+                console.log("WH " + this.waterHeights[j][i] + " PH " + poolHeight);
+            }
 		},
 		findBoundary: function(x, y, h) {
 			var passed = [];

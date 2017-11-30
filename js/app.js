@@ -14,9 +14,9 @@ require(['standardgenerator', 'harmonicgenerator', 'pool', 'pool3dview', 'jsonge
 
 		document.body.appendChild(createUI());
 		var pool = new Pool(
-			16, 16, 5,
+			16, 20, 5,
 			new HarmonicGenerator(
-				16, 16, 16, {
+				16, 20, 16, {
 					n: 4,
 					x: {a: [-0.5, -0.5, -0.8, -0.5], b: [0.0, 0.0, 0.0, 0.5]},
 					y: {a: [-0.5, -0.5, -0.8, -0.5], b: [0.0, 0.0, 0.0, 0.5]},
