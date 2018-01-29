@@ -54,6 +54,9 @@ define([
                 if (tplEl.lbl) {
                     var l = document.createElement("label");
                     l["for"] = input.id;
+                    if (tplEl.type != "radio") {
+                        l.className = "label-left";
+                    }
                     l.innerHTML = tplEl.lbl;
                     this.form.appendChild(l);
                 }
