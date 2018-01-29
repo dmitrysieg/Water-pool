@@ -216,6 +216,11 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 			this.setupScene();
 			this.setupPool();
 		},
+		update: function() {
+		    this.scene.remove(this.groups.pool);
+            this.scene.remove(this.groups.water);
+		    this.setupPool();
+		},
 		animate: function() {
 		    var self = this;
 		    requestAnimationFrame(function() {self.animate();});

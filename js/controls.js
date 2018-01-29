@@ -10,8 +10,9 @@ define([
     FilteringGenerator
 ) {
 
-    var UIControlPanel = function() {
-        //
+    var UIControlPanel = function(pool, poolView) {
+        this.pool = pool;
+        this.poolView = poolView;
     };
 
     UIControlPanel.prototype = {
@@ -50,16 +51,14 @@ define([
                     input.name = tplEl.name;
                 }
 
-                var p = document.createElement("p");
                 if (tplEl.lbl) {
                     var l = document.createElement("label");
                     l["for"] = input.id;
                     l.innerHTML = tplEl.lbl;
-                    p.appendChild(l);
+                    this.form.appendChild(l);
                 }
-                p.appendChild(input);
-
-                this.form.appendChild(p)
+                this.form.appendChild(input);
+                this.form.appendChild(document.createElement("br"));
             }
 
             var self = this;
@@ -68,7 +67,7 @@ define([
             this.input["gen-filtering"].onclick = function() {self.onRadioSelect.apply(self, arguments);};
         },
         onRadioSelect: function(e) {
-            var el = document.findElementById(e.value);
+            var el = document.getElementById(e.target.id);
             if (!el) {
                 throw "Invalid element triggered onRadioSelect";
             }
@@ -79,19 +78,22 @@ define([
                     y: {a: [-0.5, -0.5, -0.8, -0.5], b: [0.0, 0.0, 0.0, 0.5]},
                     randomize: false
                 });
-                this.pool.generate();
+                this.pool.generate().fill();
+                this.poolView.update();
             } else if (el.value == "gen-json") {
                 // todo
             } else if (el.value == "gen-filtering") {
                 this.pool.generator = new FilteringGenerator(100, 100, 20, 2).generate();
-                this.pool.generate();
+                this.pool.generate().fill();
+                this.poolView.update();
             }
         }
     };
 
-    var UIControls = function(container, values, pool) {
+    var UIControls = function(container, values, pool, poolView) {
 
         this.pool = pool;
+        this.poolView = poolView;
 
         var uiPanel = document.createElement("div");
         uiPanel.id = "infopanel";
@@ -103,7 +105,7 @@ define([
         var controlPanel = document.createElement("div");
         controlPanel.id = "controlpanel";
         uiPanel.appendChild(controlPanel);
-        this.uiControlPanel = new UIControlPanel().init(controlPanel, values);
+        this.uiControlPanel = new UIControlPanel(pool, poolView).init(controlPanel, values);
 
         this.container = container;
         container.appendChild(uiPanel);

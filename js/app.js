@@ -26,10 +26,10 @@ require([
 
     var pool = new Pool(100, 100, 0, new FilteringGenerator(100, 100, 20, 2).generate()).generate().fill();
 
-    var uiControls = new UIControls(document.body, config, pool);
-
     //new PoolTableView(pool, document.getElementById('pool'), 8, 8).render();
     var poolView = new PoolView(pool, document.body);
+    var uiControls = new UIControls(document.body, config, pool, poolView);
+
     poolView.init();
     poolView.animate();
 });
