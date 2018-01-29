@@ -13,15 +13,17 @@ define(['stack'], function(Stack) {
 		this.width = width;
 		this.height = height;
 		this.depth = depth;
+		this.generator = generator;
 		this.hasWater = false;
+
 		this.poolHeights = [];
 		for (var j = 0; j < this.height; j++) {
 			this.poolHeights[j] = [];
 			for (var i = 0; i < this.width; i++) {			
-				this.poolHeights[j][i] = generator.getHeight(i, j);
+				this.poolHeights[j][i] = 0;
 			}
 		}
-		console.info(JSON.stringify(this.poolHeights));
+
 		this.waterHeights = [];
 		for (var j = 0; j < this.height; j++) {
 			this.waterHeights[j] = [];
@@ -32,6 +34,23 @@ define(['stack'], function(Stack) {
 	};
 
 	Pool.prototype = {
+	    cleanup: function() {
+	        this.iterate(function(ph, i, j) {
+	            this.waterHeights[j][i] = -1;
+            });
+	        this.hasWater = false;
+	        return this;
+	    },
+	    generate: function() {
+	        if (this.hasWater) {
+	            this.cleanup();
+	        }
+	        this.iterate(function(ph, i, j) {
+	            this.poolHeights[j][i] = this.generator.getHeight(i, j);
+	        });
+	        console.info(JSON.stringify(this.poolHeights));
+	        return this;
+	    },
 		iterate: function(f) {
 			for (var j = 0; j < this.height; j++) {
 				for (var i = 0; i < this.width; i++) {
@@ -41,13 +60,14 @@ define(['stack'], function(Stack) {
 		},
 		fill: function() {
 			if (this.hasWater) {
-				return;
+				return this;
 			}
 			this.maxPHeight = -1;
 			this.iterate(function(ph) {if (this.maxPHeight < ph) {this.maxPHeight = ph}});
 
 			this.iterate(this.pourSingleColumn);
 			this.hasWater = true;
+			return this;
 		},
 		pourSingleColumn: function(poolHeight, i, j) {
 

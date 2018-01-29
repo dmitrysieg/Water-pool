@@ -23,4 +23,4 @@ body {
     border-color: rgb(0, 40, 20);
     border-style: solid;
 }
-#infotext {color: wheat; font-family: "Courier New";}
+#infotext, #infopanel form label {color: wheat; font-family: "Courier New";}
