@@ -1,4 +1,4 @@
-define(['stack'], function(Stack) {
+define(function() {
 
 	/**
 	 * Create a Pool object.
@@ -116,9 +116,9 @@ define(['stack'], function(Stack) {
 					passed[j][i] = false;
 				}
 			}
-			var stack = new Stack();
+			var stack = [];
 			stack.push({_x: x, _y: y});
-			while (!stack.isEmpty()) {
+			while (stack.length > 0) {
 				var curr = stack.pop();
 				
 				if (this.isBoundary(curr._x, curr._y)) {

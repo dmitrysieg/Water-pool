@@ -1,10 +1,8 @@
 define([
-    './lib/three.min',
     'generator/harmonicgenerator',
     'generator/jsongenerator',
     'generator/filteringgenerator'
 ], function(
-    THREE,
     HarmonicGenerator,
     JsonGenerator,
     FilteringGenerator
@@ -86,7 +84,7 @@ define([
             } else if (el.value == "gen-json") {
                 // todo
             } else if (el.value == "gen-filtering") {
-                this.pool.generator = new FilteringGenerator(100, 100, 20, 2).generate();
+                this.pool.generator = new FilteringGenerator(this.pool.width, this.pool.height, this.pool.depth, 2).generate();
                 this.pool.generate().fill();
                 this.poolView.update();
             }
