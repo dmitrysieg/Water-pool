@@ -1,32 +1,30 @@
 define(function() {
-	var FilteringGenerator = function(width, height, depth, blur) {
-		this.width = width;
-		this.height = height;
-		this.depth = depth;
+	var FilteringGenerator = function(blur) {
 		this.blur = blur;
-		this.map = [];
-		this.tmpmap = [];
-		// arrays init
-		for (var j = 0; j < height; j++) {
-		    this.map[j] = [];
-		    this.tmpmap[j] = [];
-		}
 	};
 
 	FilteringGenerator.prototype = {
 
         cycle: function(offset, action) {
-            for (var j = offset; j < this.height - offset; j++) {
-                for (var i = offset; i < this.width - offset; i++) {
+            for (var j = offset; j < this.poolConfig.height - offset; j++) {
+                for (var i = offset; i < this.poolConfig.width - offset; i++) {
                     action.call(this, i, j);
                 }
             }
         },
-        generate: function() {
+        init: function() {
+
+            // arrays init
+            this.map = [];
+            this.tmpmap = [];
+            for (var j = 0; j < this.poolConfig.height; j++) {
+                this.map[j] = [];
+                this.tmpmap[j] = [];
+            }
 
             // randomize
             this.cycle(0, function(i, j) {
-                this.map[j][i] = 1 + this.getRandom(this.depth);
+                this.map[j][i] = 1 + this.getRandom(this.poolConfig.depth);
                 this.tmpmap[j][i] = this.map[j][i];
             });
 

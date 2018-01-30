@@ -1,5 +1,7 @@
 define(function() {
 
+    var opCounter = 0;
+
 	/**
 	 * Create a Pool object.
 	 * @param width - Width of the surface in units.
@@ -41,9 +43,30 @@ define(function() {
 	        this.hasWater = false;
 	        return this;
 	    },
+	    /**
+	     * Return data required for a generator, to limit access to pool fields.
+	     */
+	    getConfig: function() {
+	        return {
+	            width: this.width,
+	            height: this.height,
+	            depth: this.depth
+	        };
+	    },
+	    /**
+	     * Setup a generator to use.
+	     */
+	    setGenerator: function(generator) {
+	        this.generator = generator;
+	        this.generator.poolConfig = this.getConfig();
+	        return this;
+	    },
 	    generate: function() {
 	        if (this.hasWater) {
 	            this.cleanup();
+	        }
+	        if (this.generator.init) {
+	            this.generator.init();
 	        }
 	        this.iterate(function(ph, i, j) {
 	            this.poolHeights[j][i] = this.generator.getHeight(i, j);
@@ -62,11 +85,15 @@ define(function() {
 			if (this.hasWater) {
 				return this;
 			}
+			opCounter = 0;
 			this.maxPHeight = -1;
 			this.iterate(function(ph) {if (this.maxPHeight < ph) {this.maxPHeight = ph}});
 
 			this.iterate(this.pourSingleColumn);
 			this.hasWater = true;
+
+			console.log("Operations amount: " + opCounter);
+
 			return this;
 		},
 		pourSingleColumn: function(poolHeight, i, j) {
@@ -127,6 +154,7 @@ define(function() {
 				
 				passed[curr._y][curr._x] = true;
 				for (var next = this.getNext(curr._x, curr._y), k = 0; k < next.length; k++) {
+				    opCounter++;
 					if (this.poolHeights[next[k]._y][next[k]._x] < h && !passed[next[k]._y][next[k]._x]) {
 						stack.push(next[k]);
 					}

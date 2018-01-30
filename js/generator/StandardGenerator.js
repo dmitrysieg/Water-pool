@@ -1,11 +1,10 @@
 define(function() {
-	var StandardGenerator = function(depth) {
-		this.depth = depth;
+	var StandardGenerator = function() {
 	};
 
 	StandardGenerator.prototype = {
 		getHeight: function(x, y) {
-			return 1 + this.getRandom(this.depth);
+			return 1 + this.getRandom(this.poolConfig.depth);
 		},
 		getRandom: function(n) {
 			return Math.floor(Math.random() * n);

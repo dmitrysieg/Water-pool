@@ -24,7 +24,10 @@ require([
         "gen-filtering": "gen-filtering"
     };
 
-    var pool = new Pool(100, 100, 20, new FilteringGenerator(100, 100, 20, 2).generate()).generate().fill();
+    var pool = new Pool(100, 100, 100)
+        .setGenerator(new FilteringGenerator(2))
+        .generate()
+        .fill();
 
     //new PoolTableView(pool, document.getElementById('pool'), 8, 8).render();
     var poolView = new PoolView(pool, document.body);

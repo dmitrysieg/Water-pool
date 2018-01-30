@@ -73,19 +73,17 @@ define([
                 throw "Invalid element triggered onRadioSelect";
             }
             if (el.value == "gen-harmonic") {
-                this.pool.generator = new HarmonicGenerator(this.pool.width, this.pool.height, this.pool.depth, {
+                this.pool.setGenerator(new HarmonicGenerator({
                     n: 4,
                     x: {a: [-0.5, -0.5, -0.8, -0.5], b: [0.0, 0.0, 0.0, 0.5]},
                     y: {a: [-0.5, -0.5, -0.8, -0.5], b: [0.0, 0.0, 0.0, 0.5]},
                     randomize: false
-                });
-                this.pool.generate().fill();
+                })).generate().fill();
                 this.poolView.update();
             } else if (el.value == "gen-json") {
                 // todo
             } else if (el.value == "gen-filtering") {
-                this.pool.generator = new FilteringGenerator(this.pool.width, this.pool.height, this.pool.depth, 2).generate();
-                this.pool.generate().fill();
+                this.pool.setGenerator(new FilteringGenerator(2)).generate().fill();
                 this.poolView.update();
             }
         }
