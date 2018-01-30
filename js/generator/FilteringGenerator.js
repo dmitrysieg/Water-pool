@@ -33,7 +33,7 @@ define(function() {
             // blur
             for (var b = 0; b < this.blur; b++) {
                 this.cycle(1, function(i, j) {
-                    this.tmpmap[j][i] = this.mask2(i, j);
+                    this.tmpmap[j][i] = this.mask(i, j);
                 });
                 this.cycle(1, function(i, j) {
                     this.map[j][i] = this.tmpmap[j][i];
@@ -43,6 +43,9 @@ define(function() {
             return this;
         },
         mask: function(i, j) {
+            return this.mask8(i, j);
+        },
+        mask4: function(i, j) {
             var sum =
                 this.map[j - 1][i] +
                 this.map[j + 1][i] +
@@ -50,7 +53,7 @@ define(function() {
                 this.map[j][i + 1];
             return Math.floor(sum / 4);
         },
-        mask2: function(i, j) {
+        mask8: function(i, j) {
             var sum =
                 this.map[j - 1][i - 1] +
                 this.map[j    ][i - 1] +
@@ -61,6 +64,19 @@ define(function() {
                 this.map[j    ][i + 1] +
                 this.map[j + 1][i + 1];
             return Math.floor(sum / 8);
+        },
+        stohasticMask: function(i, j) {
+            var sums = [];
+            sums.push(this.map[j - 1][i - 1]);
+            sums.push(sums[0] + this.map[j    ][i - 1]);
+            sums.push(sums[1] + this.map[j + 1][i - 1]);
+            sums.push(sums[2] + this.map[j - 1][i    ]);
+            sums.push(sums[3] + this.map[j + 1][i    ]);
+            sums.push(sums[4] + this.map[j - 1][i + 1]);
+            sums.push(sums[5] + this.map[j    ][i + 1]);
+            sums.push(sums[6] + this.map[j + 1][i + 1]);
+            var index = Math.floor(Math.random(8));
+            return sums[index] / (index + 1);
         },
 		getHeight: function(x, y) {
 			return this.map[y][x];
