@@ -73,7 +73,7 @@ define(function() {
             sums.push(sums[4] + this.map[j - 1][i + 1]);
             sums.push(sums[5] + this.map[j    ][i + 1]);
             sums.push(sums[6] + this.map[j + 1][i + 1]);
-            var index = Math.floor(Math.random(8));
+            var index = Math.floor(8 * Math.random());
             return sums[index] / (index + 1);
         },
 		getHeight: function(x, y) {

@@ -25,7 +25,7 @@ require([
     };
 
     var pool = new Pool(100, 100, 100)
-        .setGenerator(new FilteringGenerator(2))
+        .setGenerator(new FilteringGenerator(10))
         .generate()
         .fill();
 
