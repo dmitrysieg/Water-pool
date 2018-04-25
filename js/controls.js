@@ -111,5 +111,27 @@ define([
         return uiPanel;
     };
 
-    return UIControls;
+    var Modal = function(container) {
+        this.modal = document.createElement("div");
+        this.modal.className = "modal";
+        container.appendChild(this.modal);
+
+        this.modalIcon = document.createElement("i");
+        this.modalIcon.className = "spinner";
+        this.modal.appendChild(this.modalIcon);
+    };
+
+    Modal.prototype = {
+        hide: function() {
+            this.modal.style.display = "none";
+        },
+        show: function() {
+            this.modal.style.display = "block";
+        }
+    };
+
+    return {
+        Modal: Modal,
+        UIControls: UIControls
+    };
 });

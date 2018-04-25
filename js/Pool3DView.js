@@ -231,12 +231,13 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 		logPositions: function() {
 			var el = document.getElementById('infotext');
 			var dir = this.camera.getWorldDirection();
-			el.innerHTML = "pos X: " + this.camera.position.x + "<br/>" +
-						"pos Y: " + this.camera.position.y + "<br/>" +
-						"pos Z: " + this.camera.position.z + "<br/>" +
-						"dir X: " + dir.x + "<br/>" +
-						"dir Y: " + dir.y + "<br/>" +
-						"dir Z: " + dir.z;
+			el.innerHTML =
+                "pos X: " + this.camera.position.x + "<br/>" +
+                "pos Y: " + this.camera.position.y + "<br/>" +
+				"pos Z: " + this.camera.position.z + "<br/>" +
+				"dir X: " + dir.x + "<br/>" +
+				"dir Y: " + dir.y + "<br/>" +
+				"dir Z: " + dir.z;
 		}
 	};
 	

@@ -13,7 +13,7 @@ require([
     FilteringGenerator,
     Pool,
     PoolView,
-    UIControls
+    Controls
 ) {
 
     var config = {
@@ -24,15 +24,25 @@ require([
         "gen-filtering": "gen-filtering"
     };
 
-    var pool = new Pool(100, 100, 100)
-        .setGenerator(new FilteringGenerator(10))
-        .generate()
-        .fill();
+    var modal = new Controls.Modal(document.body);
+    modal.show();
 
-    //new PoolTableView(pool, document.getElementById('pool'), 8, 8).render();
-    var poolView = new PoolView(pool, document.body);
-    var uiControls = new UIControls(document.body, config, pool, poolView);
+    var pool;
+    var poolView;
+    var uiControls;
+    var thread = setTimeout(function() {
+        pool = new Pool(100, 100, 100)
+            .setGenerator(new FilteringGenerator(10))
+            .generate()
+            .fill();
 
-    poolView.init();
+        //new PoolTableView(pool, document.getElementById('pool'), 8, 8).render();
+        poolView = new PoolView(pool, document.body);
+        uiControls = new Controls.UIControls(document.body, config, pool, poolView);
+
+        poolView.init();
+        modal.hide();
+    }, 0);
+
     poolView.animate();
 });
