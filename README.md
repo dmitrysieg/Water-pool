@@ -5,4 +5,4 @@ Algorithm complexity: ![nlogn](http://latex.codecogs.com/gif.latex?n^{2}\log{n})
 
 Rendering all that with ThreeJS.
 
-![Screenshot](docs/Screenshot01.png)
+![Screenshot](docs/Screenshot02.png)
