@@ -12,12 +12,33 @@ define(function() {
                 }
             }
         },
+        cycleOutline: function(offset, action) {
+
+            var height = this.poolConfig.height;
+            var width = this.poolConfig.width;
+
+            for (var j = 0; j < offset; j++) {
+                for (var i = 0; i < width; i++) {
+                    action.call(this, i, j);
+                    action.call(this, i, height - 1 - j);
+                }
+            }
+            for (var j = offset; j < height - offset; j++) {
+                for (var i = 0; i < offset; i++) {
+                    action.call(this, i, j);
+                    action.call(this, width - 1 - i, j);
+                }
+            }
+        },
         init: function() {
+
+            var height = this.poolConfig.height;
+            var width = this.poolConfig.width;
 
             // arrays init
             this.map = [];
             this.tmpmap = [];
-            for (var j = 0; j < this.poolConfig.height; j++) {
+            for (var j = 0; j < height; j++) {
                 this.map[j] = [];
                 this.tmpmap[j] = [];
             }
@@ -29,14 +50,40 @@ define(function() {
             });
 
             // blur
+            var avg = 0.0;
+
             for (var b = 0; b < this.blur; b++) {
                 this.cycle(1, function(i, j) {
                     this.tmpmap[j][i] = this.mask(i, j);
                 });
                 this.cycle(1, function(i, j) {
                     this.map[j][i] = this.tmpmap[j][i];
+
+                    // calc average
+                    avg += this.map[j][i];
                 });
             }
+
+            // smoothing edges
+            avg /= (height - 1) * (width - 1) * this.blur;
+            this.cycleOutline(5, function(i, j) {
+                var ratio = this.map[j][i] / avg;
+                if (ratio >= 1.08 || ratio <= 0.92) {
+                    this.map[j][i] = Math.floor(avg);
+                }
+            });
+
+            // cutting extra height
+            var min = this.poolConfig.depth;
+            this.cycle(0, function(i, j) {
+                if (this.map[j][i] < min) {
+                    min = this.map[j][i];
+                }
+            });
+
+            this.cycle(0, function(i, j) {
+                this.map[j][i] -= min - 1;
+            });
 
             return this;
         },
