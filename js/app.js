@@ -30,6 +30,12 @@ require([
     var pool;
     var poolView;
     var uiControls;
+
+    var waiter = document.createElement("div");
+    waiter.addEventListener("done", function() {
+        poolView.animate();
+    });
+
     var thread = setTimeout(function() {
         pool = new Pool(100, 100, 100)
             .setGenerator(new FilteringGenerator(10))
@@ -42,7 +48,6 @@ require([
 
         poolView.init();
         modal.hide();
+        waiter.dispatchEvent(new CustomEvent("done"));
     }, 0);
-
-    poolView.animate();
 });
