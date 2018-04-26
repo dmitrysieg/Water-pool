@@ -53,6 +53,9 @@ define(function() {
 	            depth: this.depth
 	        };
 	    },
+		getGenerator: function() {
+	    	return this.generator;
+		},
 	    /**
 	     * Setup a generator to use.
 	     */

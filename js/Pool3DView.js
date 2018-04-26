@@ -3,15 +3,18 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 		this.pool = pool;
 		this.el = el;
 		this.materials = {
+		    stdColor: new THREE.Color(1, 1, 1),
 		    water: new THREE.MeshPhongMaterial({
                 color: 0x156289,
                 shading: THREE.FlatShading,
                 transparent: true,
                 opacity: 0.3
             }),
-            pool: new THREE.MeshPhongMaterial({
-                color: 0x808080,
-                shading: THREE.FlatShading
+            pool: new THREE.MeshStandardMaterial({
+                //color: 0x808080,
+                roughness: 0.9,
+                shading: THREE.FlatShading,
+                vertexColors: THREE.FaceColors
             })
         };
 	};
@@ -26,10 +29,11 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 		/**
 		 * @param faces - Array of geometry.faces.
 		 * @param v - Array of vertices in a clockwise order.
+         * @param color - Color
 		 */
-		drawFace4: function(faces, v) {
-		    faces.push(new THREE.Face3(v[0], v[1], v[2]));
-            faces.push(new THREE.Face3(v[0], v[2], v[3]));
+		drawFace4: function(faces, v, color) {
+		    faces.push(new THREE.Face3(v[0], v[1], v[2], null, color || this.materials.stdColor));
+            faces.push(new THREE.Face3(v[0], v[2], v[3], null, color || this.materials.stdColor));
 		},
 		setupPool: function() {
 		    this.groups = {
@@ -53,6 +57,7 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
                 for (var j = 0; j < width; j++) {
 
                     var poolHeight = this.getPool().poolHeights[i][j];
+                    var color = this.getPool().getGenerator().getColor(THREE, j, i);
 
                     // bypassing clockwise
                     poolGeometry.vertices.push(new THREE.Vector3(i    , poolHeight, j    ));
@@ -69,7 +74,7 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
                         this.verticesIndices.top[i][j][1],
                         this.verticesIndices.top[i][j][2],
                         this.verticesIndices.top[i][j][3]
-                    ]);
+                    ], color);
 
                     // previous laying vertices exist, merging sides
                     // if pool heights match, skip this
@@ -79,7 +84,7 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
                             this.verticesIndices.top[i    ][j][0],
                             this.verticesIndices.top[i - 1][j][3],
                             this.verticesIndices.top[i - 1][j][2]
-                        ]);
+                        ], color);
                     }
 
                     // the same for j
@@ -89,7 +94,7 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
                             this.verticesIndices.top[i][j    ][3],
                             this.verticesIndices.top[i][j - 1][2],
                             this.verticesIndices.top[i][j - 1][1]
-                        ]);
+                        ], color);
                     }
 
                     // water in the same cycle
@@ -192,18 +197,8 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 
 			this.scene = new THREE.Scene();
 
-			var lights = [];
-			lights[0] = new THREE.PointLight(0xDDDDDD, 1, 0);
-			lights[1] = new THREE.PointLight(0xDDDDDD, 1, 0);
-			lights[2] = new THREE.PointLight(0xDDDDDD, 1, 0);
-
-			lights[0].position.set(0, 200, 0);
-			lights[1].position.set(100, 200, 100);
-			lights[2].position.set(-100, -200, -100);
-
-			this.scene.add(lights[0]);
-			this.scene.add(lights[1]);
-			this.scene.add(lights[2]);
+            this.scene.add(new THREE.AmbientLight(0x404040));
+            this.scene.add(new THREE.HemisphereLight(0xffffbb, 0x080820, 0.8));
 			
 			this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
 			this.controls.center = new THREE.Vector3(

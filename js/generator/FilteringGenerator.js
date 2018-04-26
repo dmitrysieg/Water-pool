@@ -75,15 +75,22 @@ define(function() {
 
             // cutting extra height
             var min = this.poolConfig.depth;
+            var max = 0;
             this.cycle(0, function(i, j) {
                 if (this.map[j][i] < min) {
                     min = this.map[j][i];
+                }
+                if (this.map[j][i] > max) {
+                    max = this.map[j][i];
                 }
             });
 
             this.cycle(0, function(i, j) {
                 this.map[j][i] -= min - 1;
             });
+
+            this.min = 1;
+            this.max = max - min + 1;
 
             return this;
         },
@@ -126,6 +133,16 @@ define(function() {
 		getHeight: function(x, y) {
 			return this.map[y][x];
 		},
+        getColor: function(THREE, x, y) {
+            var height = this.map[y][x];
+            var h = (height - this.min) / (this.max - this.min); // todo catch division by zero
+            var s = 0.8;
+            var l = 0.3;
+            return new THREE.Color("hsl({1}, {2}%, {3}%)"
+                .replace("{1}", Math.floor(h * 100.0))
+                .replace("{2}", Math.floor(s * 100.0))
+                .replace("{3}", Math.floor(l * 100.0)));
+        },
 		getRandom: function(n) {
 			return Math.floor(Math.random() * n);
 		}
