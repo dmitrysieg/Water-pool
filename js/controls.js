@@ -66,6 +66,8 @@ define([
             this.input["gen-harmonic"].onclick = function() {self.onRadioSelect.apply(self, arguments);};
             this.input["gen-json"].onclick = function() {self.onRadioSelect.apply(self, arguments);};
             this.input["gen-filtering"].onclick = function() {self.onRadioSelect.apply(self, arguments);};
+
+            return this;
         },
         onRadioSelect: function(e) {
             var el = document.getElementById(e.target.id);
@@ -73,6 +75,9 @@ define([
                 throw "Invalid element triggered onRadioSelect";
             }
             if (el.value == "gen-harmonic") {
+
+                this.modal.show();
+
                 this.pool.setGenerator(new HarmonicGenerator({
                     n: 4,
                     x: {a: [-0.5, -0.5, -0.8, -0.5], b: [0.0, 0.0, 0.0, 0.5]},
@@ -80,11 +85,19 @@ define([
                     randomize: false
                 })).generate().fill();
                 this.poolView.update();
+
+                this.modal.hide();
+
             } else if (el.value == "gen-json") {
                 // todo
             } else if (el.value == "gen-filtering") {
+
+                this.modal.show();
+
                 this.pool.setGenerator(new FilteringGenerator(2)).generate().fill();
                 this.poolView.update();
+
+                this.modal.hide();
             }
         }
     };
@@ -108,7 +121,12 @@ define([
 
         this.container = container;
         container.appendChild(uiPanel);
-        return uiPanel;
+    };
+
+    UIControls.prototype = {
+        setModal: function(modal) {
+            this.uiControlPanel.modal = modal;
+        }
     };
 
     var Modal = function(container) {

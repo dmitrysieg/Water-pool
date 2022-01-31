@@ -45,6 +45,7 @@ require([
         //new PoolTableView(pool, document.getElementById('pool'), 8, 8).render();
         poolView = new PoolView(pool, document.body);
         uiControls = new Controls.UIControls(document.body, config, pool, poolView);
+        uiControls.setModal(modal);
 
         poolView.init();
         modal.hide();

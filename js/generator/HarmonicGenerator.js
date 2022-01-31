@@ -20,6 +20,17 @@ define(function() {
                 }
             }
 	    },
+	    // todo remove duplicate code with FilteringGenerator
+	    // and add actual implementation
+        getColor: function(THREE, x, y) {
+            var h = 0.5;
+            var s = 0.8;
+            var l = 0.3;
+            return new THREE.Color("hsl({1}, {2}%, {3}%)"
+                .replace("{1}", Math.floor(h * 100.0))
+                .replace("{2}", Math.floor(s * 100.0))
+                .replace("{3}", Math.floor(l * 100.0)));
+        },
 		getHeight: function(x, y) {
 			var vx = 0.0, vy = 0.0;
 			for (var i = 0; i < this.config.n; i++) {
