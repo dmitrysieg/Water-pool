@@ -5,4 +5,6 @@ Algorithm complexity: ![nlogn](http://latex.codecogs.com/gif.latex?n^{2}\log{n})
 
 Rendering all that with ThreeJS.
 
+Demo: https://dmitrysieg.github.io/Water-pool/
+
 ![Screenshot](docs/Screenshot02.png)
