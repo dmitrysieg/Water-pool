@@ -20,6 +20,11 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 	};
 
 	Pool3DView.prototype = {
+
+	    axisX: new THREE.Vector3(1.0, 0.0, 0.0),
+	    axisY: new THREE.Vector3(0.0, 1.0, 0.0),
+	    axisZ: new THREE.Vector3(0.0, 0.0, 1.0),
+
 		getPool: function() {
 			return this.pool;
 		},
@@ -226,13 +231,18 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 		logPositions: function() {
 			var el = document.getElementById('infotext');
 			var dir = this.camera.getWorldDirection();
+
+			let angleX = Math.round(dir.angleTo(this.axisX) / Math.PI * 180);
+			let angleY = Math.round(dir.angleTo(this.axisY) / Math.PI * 180);
+			let angleZ = Math.round(dir.angleTo(this.axisZ) / Math.PI * 180);
+
 			el.innerHTML =
-                "pos X: " + this.camera.position.x + "<br/>" +
-                "pos Y: " + this.camera.position.y + "<br/>" +
-				"pos Z: " + this.camera.position.z + "<br/>" +
-				"dir X: " + dir.x + "<br/>" +
-				"dir Y: " + dir.y + "<br/>" +
-				"dir Z: " + dir.z;
+                "pos X: " + Math.trunc(this.camera.position.x * 1000) / 1000 + "<br/>" +
+                "pos Y: " + Math.trunc(this.camera.position.y * 1000) / 1000 + "<br/>" +
+				"pos Z: " + Math.trunc(this.camera.position.z * 1000) / 1000 + "<br/>" +
+				"dir X: " + angleX + "<br/>" +
+				"dir Y: " + angleY + "<br/>" +
+				"dir Z: " + angleZ;
 		}
 	};
 	
