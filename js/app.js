@@ -1,10 +1,10 @@
 require([
-    'generator/standardgenerator',
-    'generator/harmonicgenerator',
-    'generator/jsongenerator',
-    'generator/filteringgenerator',
-    'pool',
-    'pool3dview',
+    'generator/StandardGenerator',
+    'generator/HarmonicGenerator',
+    'generator/JsonGenerator',
+    'generator/FilteringGenerator',
+    'Pool',
+    'Pool3DView',
     'controls'
 ], function(
     StandardGenerator,

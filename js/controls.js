@@ -1,7 +1,7 @@
 define([
-    'generator/harmonicgenerator',
-    'generator/jsongenerator',
-    'generator/filteringgenerator'
+    'generator/HarmonicGenerator',
+    'generator/JsonGenerator',
+    'generator/FilteringGenerator'
 ], function(
     HarmonicGenerator,
     JsonGenerator,
