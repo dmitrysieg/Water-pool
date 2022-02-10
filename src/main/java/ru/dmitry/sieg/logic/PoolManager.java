@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.dmitry.sieg.entity.Pool;
 import ru.dmitry.sieg.entity.PoolParams;
+import ru.dmitry.sieg.logic.solver.SolverContext;
 
 @Component
 public class PoolManager {
@@ -11,12 +12,12 @@ public class PoolManager {
     @Autowired
     private PoolGenerator poolGenerator;
 
-    @Autowired
-    private PoolSolver poolSolver;
+    public SolverContext getPool(final PoolParams poolParams) {
 
-    public Pool getPool(final PoolParams poolParams) {
         final Pool pool = poolGenerator.generate(poolParams);
-        final Pool result = poolSolver.solve(pool);
-        return result;
+
+        final PoolSolver poolSolver = new PoolSolver(pool);
+        poolSolver.solve(pool);
+        return poolSolver.getContext();
     }
 }
