@@ -19,9 +19,13 @@ require([
     var config = {
         width: 100,
         height: 100,
-        "gen-harmonic": "gen-harmonic",
-        "gen-json": "gen-json",
-        "gen-filtering": "gen-filtering"
+        depth: 100,
+        generator: {
+            name: "gen-filtering",
+            params: {
+                blur: 10
+            }
+        }
     };
 
     var modal = new Controls.Modal(document.body);
@@ -36,19 +40,25 @@ require([
         poolView.animate();
     });
 
+    let poolServer = new PoolServer("/pool");
+
     var thread = setTimeout(function() {
-        pool = new Pool(100, 100, 100)
-            .setGenerator(new FilteringGenerator(10))
-            .generate()
-            .fill();
 
-        //new PoolTableView(pool, document.getElementById('pool'), 8, 8).render();
-        poolView = new PoolView(pool, document.body);
-        uiControls = new Controls.UIControls(document.body, config, pool, poolView);
-        uiControls.setModal(modal);
+        poolServer.getPool(config, function() {
 
-        poolView.init();
-        modal.hide();
-        waiter.dispatchEvent(new CustomEvent("done"));
+            if (!xhr.response.pool) {
+                console.error("No pool information found in response");
+                return;
+            }
+
+            //new PoolTableView(pool, document.getElementById('pool'), 8, 8).render();
+            poolView = new PoolView(xhr.response.pool, poolServer, config, document.body);
+            uiControls = new Controls.UIControls(document.body, config, poolView);
+            uiControls.setModal(modal);
+
+            poolView.init();
+            modal.hide();
+            waiter.dispatchEvent(new CustomEvent("done"));
+        });
     }, 0);
 });

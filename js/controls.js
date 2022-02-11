@@ -8,9 +8,9 @@ define([
     FilteringGenerator
 ) {
 
-    var UIControlPanel = function(pool, poolView) {
-        this.pool = pool;
+    var UIControlPanel = function(poolView, config) {
         this.poolView = poolView;
+        this.config = config;
     };
 
     UIControlPanel.prototype = {
@@ -18,12 +18,13 @@ define([
         tpl: [
             {id: "width", type: "number", lbl: "Width"},
             {id: "height", type: "number", lbl: "Height"},
+            {id: "depth", type: "number", lbl: "Depth"},
             {id: "submit", type: "button", value: "Apply"},
             {id: "gen-harmonic", type: "radio", value: "gen-harmonic", name: "gen-group", lbl: "Harmonic"},
             {id: "gen-json", type: "radio", value: "gen-json", name: "gen-group", lbl: "JSON"},
             {id: "gen-filtering", type: "radio", value: "gen-filtering", name: "gen-group", lbl: "Filtering"}
         ],
-        init: function(container, values) {
+        init: function(container, config) {
 
             this.container = container;
             this.input = {};
@@ -43,7 +44,7 @@ define([
                 if (tplEl.value) {
                     input.value = tplEl.value;
                 } else {
-                    input.value = values[tplEl.id];
+                    input.value = config[tplEl.id];
                 }
                 if (tplEl.name) {
                     input.name = tplEl.name;
@@ -76,35 +77,34 @@ define([
             }
             if (el.value == "gen-harmonic") {
 
-                this.modal.show();
-
-                this.pool.setGenerator(new HarmonicGenerator({
-                    n: 4,
-                    x: {a: [-0.5, -0.5, -0.8, -0.5], b: [0.0, 0.0, 0.0, 0.5]},
-                    y: {a: [-0.5, -0.5, -0.8, -0.5], b: [0.0, 0.0, 0.0, 0.5]},
-                    randomize: false
-                })).generate().fill();
-                this.poolView.update();
-
-                this.modal.hide();
+                this.config.generator = {
+                    name: "harmonic",
+                    params: {
+                        n: 4,
+                        x: {a: [-0.5, -0.5, -0.8, -0.5], b: [0.0, 0.0, 0.0, 0.5]},
+                        y: {a: [-0.5, -0.5, -0.8, -0.5], b: [0.0, 0.0, 0.0, 0.5]},
+                        randomize: false
+                    }
+                };
+                this.poolView.queryPool();
 
             } else if (el.value == "gen-json") {
                 // todo
             } else if (el.value == "gen-filtering") {
 
-                this.modal.show();
-
-                this.pool.setGenerator(new FilteringGenerator(2)).generate().fill();
-                this.poolView.update();
-
-                this.modal.hide();
+                this.config.generator = {
+                    name: "filtering",
+                    params: {
+                        blur: 2
+                    }
+                };
+                this.poolView.queryPool();
             }
         }
     };
 
-    var UIControls = function(container, values, pool, poolView) {
+    var UIControls = function(container, config, poolView) {
 
-        this.pool = pool;
         this.poolView = poolView;
 
         var uiPanel = document.createElement("div");
@@ -117,7 +117,7 @@ define([
         var controlPanel = document.createElement("div");
         controlPanel.id = "controlpanel";
         uiPanel.appendChild(controlPanel);
-        this.uiControlPanel = new UIControlPanel(pool, poolView).init(controlPanel, values);
+        this.uiControlPanel = new UIControlPanel(poolView, config).init(controlPanel, config);
 
         this.container = container;
         container.appendChild(uiPanel);

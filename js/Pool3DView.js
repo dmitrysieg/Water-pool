@@ -1,7 +1,9 @@
 define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
-	var Pool3DView = function(pool, el) {
+	var Pool3DView = function(pool, poolServer, config, el) {
 		this.pool = pool;
 		this.el = el;
+		this.poolServer = poolServer;
+		this.config = config;
 		this.materials = {
 		    stdColor: new THREE.Color(1, 1, 1),
 		    water: new THREE.MeshPhongMaterial({
@@ -20,6 +22,17 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 	};
 
 	Pool3DView.prototype = {
+
+        queryPool: function() {
+            poolServer.getPool(config, function() {
+                if (!xhr.response.pool) {
+                    console.error("No pool information found in response");
+                    return;
+                }
+                poolView.init();
+                poolView.animate();
+            });
+        },
 
 	    axisX: new THREE.Vector3(1.0, 0.0, 0.0),
 	    axisY: new THREE.Vector3(0.0, 1.0, 0.0),
