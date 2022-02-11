@@ -7,6 +7,9 @@ define(function() {
 		getHeight: function(x, y) {
 			return this.map[y][x];
 		},
+		getColor: function(THREE, x, y) {
+		    return new THREE.Color("hsl(0.8, 80%, 30%");
+		}
 	};
 	
 	return JsonGenerator;

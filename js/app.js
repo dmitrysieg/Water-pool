@@ -37,8 +37,8 @@ require([
     });
 
     var thread = setTimeout(function() {
-        pool = new Pool(100, 100, 100)
-            .setGenerator(new FilteringGenerator(10))
+        pool = new Pool(5, 4, 100)
+            .setGenerator(new JsonGenerator("[[12, 12, 12, 12, 12],[12, 11, 11,  9, 12],[12, 12, 12, 11, 12],[12, 12, 12, 12, 12]]"))
             .generate()
             .fill();
 
