@@ -19,7 +19,7 @@ require([
     var config = {
         width: 100,
         height: 100,
-        depth: 100,
+        depth: 10,
         generator: {
             name: "gen-filtering",
             params: {
@@ -44,15 +44,18 @@ require([
 
     var thread = setTimeout(function() {
 
-        poolServer.getPool(config, function() {
+        poolServer.getPool(config, function(response) {
 
-            if (!xhr.response.pool) {
+            if (!response.pool) {
                 console.error("No pool information found in response");
                 return;
             }
 
+            response.pool.minHeight = response.maxFinder.minHeight;
+            response.pool.maxHeight = response.maxFinder.maxHeight;
+
             //new PoolTableView(pool, document.getElementById('pool'), 8, 8).render();
-            poolView = new PoolView(xhr.response.pool, poolServer, config, document.body);
+            poolView = new PoolView(response.pool, poolServer, config, document.body);
             uiControls = new Controls.UIControls(document.body, config, poolView);
             uiControls.setModal(modal);
 

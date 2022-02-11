@@ -24,11 +24,16 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 	Pool3DView.prototype = {
 
         queryPool: function() {
-            poolServer.getPool(config, function() {
-                if (!xhr.response.pool) {
+            poolServer.getPool(config, function(response) {
+                if (!response.pool) {
                     console.error("No pool information found in response");
                     return;
                 }
+
+                response.pool.minHeight = response.maxFinder.minHeight;
+                response.pool.maxHeight = response.maxFinder.maxHeight;
+                poolView.pool = response.pool;
+
                 poolView.init();
                 poolView.animate();
             });
@@ -53,6 +58,18 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 		    faces.push(new THREE.Face3(v[0], v[1], v[2], null, color || this.materials.stdColor));
             faces.push(new THREE.Face3(v[0], v[2], v[3], null, color || this.materials.stdColor));
 		},
+
+		getColor: function(THREE, x, y) {
+		    var height = this.pool.poolHeight[y][x];
+            var h = (height - this.pool.minHeight) / (this.pool.maxHeight - this.pool.minHeight); // todo catch division by zero
+            var s = 0.8;
+            var l = 0.3;
+            return new THREE.Color("hsl({1}, {2}%, {3}%)"
+                .replace("{1}", Math.floor(h * 100.0))
+                .replace("{2}", Math.floor(s * 100.0))
+                .replace("{3}", Math.floor(l * 100.0)));
+		},
+
 		setupPool: function() {
 		    this.groups = {
 		        pool: new THREE.Group(),
@@ -74,8 +91,8 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 
                 for (var j = 0; j < width; j++) {
 
-                    var poolHeight = this.getPool().poolHeights[i][j];
-                    var color = this.getPool().getGenerator().getColor(THREE, j, i);
+                    var poolHeight = this.getPool().poolHeight[i][j];
+                    var color = this.getColor(THREE, j, i);
 
                     // bypassing clockwise
                     poolGeometry.vertices.push(new THREE.Vector3(i    , poolHeight, j    ));
@@ -96,7 +113,7 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 
                     // previous laying vertices exist, merging sides
                     // if pool heights match, skip this
-                    if (i > 0 && this.getPool().poolHeights[i - 1][j] != poolHeight) {
+                    if (i > 0 && this.getPool().poolHeight[i - 1][j] != poolHeight) {
                         this.drawFace4(poolGeometry.faces, [
                             this.verticesIndices.top[i    ][j][1],
                             this.verticesIndices.top[i    ][j][0],
@@ -106,7 +123,7 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
                     }
 
                     // the same for j
-                    if (j > 0 && this.getPool().poolHeights[i][j - 1] != poolHeight) {
+                    if (j > 0 && this.getPool().poolHeight[i][j - 1] != poolHeight) {
                         this.drawFace4(poolGeometry.faces, [
                             this.verticesIndices.top[i][j    ][0],
                             this.verticesIndices.top[i][j    ][3],
@@ -116,9 +133,9 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
                     }
 
                     // water in the same cycle
-                    if (this.getPool().hasWater && this.getPool().waterHeights[i][j] > -1) {
+                    if (this.getPool().hasWater && this.getPool().waterHeight[i][j] > -1) {
 
-                        var waterHeight = this.getPool().waterHeights[i][j] - this.getPool().poolHeights[i][j];
+                        var waterHeight = this.getPool().waterHeight[i][j] - this.getPool().poolHeight[i][j];
 
                         var waterGeometry = new THREE.BoxGeometry(1, waterHeight, 1);
                         var waterMesh = new THREE.Mesh(waterGeometry, this.materials.water);

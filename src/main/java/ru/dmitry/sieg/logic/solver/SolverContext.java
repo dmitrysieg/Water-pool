@@ -1,5 +1,6 @@
 package ru.dmitry.sieg.logic.solver;
 
+import lombok.Getter;
 import ru.dmitry.sieg.entity.Pool;
 
 public class SolverContext {
@@ -30,20 +31,22 @@ public class SolverContext {
         return maxFinder;
     }
 
+    @Getter
     public static class MaxFinder implements Pool.Iterator {
 
+        private int minHeight;
         private int maxHeight;
 
         public MaxFinder() {
+            this.minHeight = Integer.MAX_VALUE;
             this.maxHeight = -1;
-        }
-
-        public int getMaxHeight() {
-            return maxHeight;
         }
 
         @Override
         public void apply(final int height, final int x, final int y) {
+            if (this.minHeight > height) {
+                this.minHeight = height;
+            }
             if (this.maxHeight < height) {
                 this.maxHeight = height;
             }
