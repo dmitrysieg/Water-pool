@@ -24,7 +24,7 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 	Pool3DView.prototype = {
 
         queryPool: function() {
-            poolServer.getPool(config, function(response) {
+            this.poolServer.getPool(config, function(response) {
                 if (!response.pool) {
                     console.error("No pool information found in response");
                     return;

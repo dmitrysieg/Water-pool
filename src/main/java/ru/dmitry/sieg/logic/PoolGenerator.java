@@ -16,10 +16,10 @@ public class PoolGenerator {
     private GeneratorManager generatorManager;
 
     public Pool generate(final PoolParams poolParams) {
+
         final Pool pool = new Pool(poolParams);
 
-
-        final Generator generator = new StandardGenerator();
+        final Generator generator = new FilteringGenerator(10);
         generator.init(poolParams);
         generatorManager.generate(pool, generator);
         return pool;
