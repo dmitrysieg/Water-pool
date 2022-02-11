@@ -10,6 +10,7 @@ define(function() {
             let xhr = new XMLHttpRequest();
             xhr.open("POST", this.url, true);
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.setRequestHeader("Cache-Control", "no-cache");
 
             xhr.onload = function(e) {
                 let jsonResponse = JSON.parse(e.target.response);

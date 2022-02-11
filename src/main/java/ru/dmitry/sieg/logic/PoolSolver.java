@@ -50,7 +50,9 @@ public class PoolSolver implements GeneratorFunction {
         // Rewritten from JS, todo rewrite in java style
         // ***
 
+        // start testing "waterproof" from pool height + 1, because there's firm ground at pool height and can't be water level.
         int lowest = height + 1;
+        // there can be no water level above max pool height (nothing can stop it from pouring to lower level).
         int highest = this.context.getMaxFinder().getMaxHeight();
 
         // some unreachable value, uncomparable with the "center" value at the beginning

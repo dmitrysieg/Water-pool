@@ -17,8 +17,8 @@ require([
 ) {
 
     var config = {
-        width: 100,
-        height: 100,
+        width: 5,
+        height: 4,
         depth: 100,
         generator: {
             name: "gen-filtering",
