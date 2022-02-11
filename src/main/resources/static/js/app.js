@@ -3,7 +3,7 @@ require([
     'generator/HarmonicGenerator',
     'generator/JsonGenerator',
     'generator/FilteringGenerator',
-    'Pool',
+    'PoolServer',
     'Pool3DView',
     'controls'
 ], function(
@@ -11,7 +11,7 @@ require([
     HarmonicGenerator,
     JsonGenerator,
     FilteringGenerator,
-    Pool,
+    PoolServer,
     PoolView,
     Controls
 ) {
