@@ -16,12 +16,7 @@ public class PoolGenerator {
 
         final Pool pool = new Pool(poolParams);
 
-        final Generator generator = new JsonGenerator("[" +
-                "[12, 12, 12, 12, 12]," +
-                "[12, 11, 11,  9, 12]," +
-                "[12, 12, 12, 11, 12]," +
-                "[12, 12, 12, 12, 12]" +
-                "]");
+        final Generator generator = new FilteringGenerator(10);
         generator.init(poolParams);
         generatorManager.generate(pool, generator);
         return pool;

@@ -55,34 +55,20 @@ public class PoolSolver implements GeneratorFunction {
         // there can be no water level above max pool height (nothing can stop it from pouring to lower level).
         int highest = this.context.getMaxFinder().getMaxHeight();
 
-        // some unreachable value, uncomparable with the "center" value at the beginning
-        int lastCenter = highest + 1;
-        int center = (int) Math.floor((lowest + highest) * 0.5D);
+        int lastWaterLevel = -1;
 
-        boolean lastResultPoored;
+        while (lowest <= highest) {
 
-        while (Math.abs(lastCenter - center) > 0) {
+            int center = lowest + (highest - lowest) / 2;
 
             if (pool.isBoundary(x, y) || findBoundary(x, y, center)) {
-                highest = center;
-                lastCenter = center;
-                center = (int) Math.floor((lowest + highest) * 0.5D);
-
-                lastResultPoored = true;
+                highest = center - 1;
             } else {
-                lowest = center;
-                lastCenter = center;
-                center = (int) Math.floor((lowest + highest) * 0.5D);
-
-                lastResultPoored = false;
-            }
-
-            if (!lastResultPoored) {
-                return lastCenter;
+                lowest = center + 1;
+                lastWaterLevel = center;
             }
         }
-
-        return -1;
+        return lastWaterLevel;
     }
 
     private boolean findBoundary(final int x, final int y, final int h) {
