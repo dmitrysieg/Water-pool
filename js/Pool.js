@@ -95,6 +95,7 @@ define(function() {
 			this.iterate(this.pourSingleColumn);
 			this.hasWater = true;
 
+            console.info(JSON.stringify(this.waterHeights));
 			console.log("Operations amount: " + opCounter);
 
 			return this;
@@ -108,35 +109,19 @@ define(function() {
 
             var lowest = poolHeight + 1,
                 highest = this.maxPHeight;
-            var lastCenter = this.maxPHeight + 1, // some unreachable value, uncomparable with the "center" value at the beginning
-                center = Math.floor((lowest + highest) / 2);
 
-            var lastResultPoored = true;
-            while (Math.abs(lastCenter - center) > 0) {
+            var lastWaterLevel = -1;
+            while (highest >= lowest) {
 
+                var center = lowest + Math.floor((highest - lowest) / 2);
                 if (this.isBoundary(i, j) || this.findBoundary(i, j, center)) {
-
-                    //console.log(j + " " + i + " " + center + " poored");
-                    highest = center;
-                    lastCenter = center;
-                    center = Math.floor((lowest + highest) / 2);
-
-                    lastResultPoored = true;
-
+                    highest = center - 1;
                 } else {
-
-                    //console.log(j + " " + i + " " + center + " not poored");
-                    lowest = center;
-                    lastCenter = center;
-                    center = Math.floor((lowest + highest) / 2);
-
-                    lastResultPoored = false;
+                    lowest = center + 1;
+                    lastWaterLevel = center;
                 }
             }
-            if (!lastResultPoored) {
-                this.waterHeights[j][i] = lastCenter;
-                //console.log("WH " + this.waterHeights[j][i] + " PH " + poolHeight);
-            }
+            this.waterHeights[j][i] = lastWaterLevel;
 		},
 		findBoundary: function(x, y, h) {
 			var passed = [];
