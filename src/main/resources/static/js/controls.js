@@ -16,13 +16,13 @@ define([
     UIControlPanel.prototype = {
 
         tpl: [
-            {id: "width", type: "number", lbl: "Width"},
-            {id: "height", type: "number", lbl: "Height"},
-            {id: "depth", type: "number", lbl: "Depth"},
+            {id: "width", type: "number", lbl: "Width", name: "width"},
+            {id: "height", type: "number", lbl: "Height", name: "height"},
+            {id: "depth", type: "number", lbl: "Depth", name: "depth"},
             {id: "submit", type: "button", value: "Apply"},
-            {id: "gen-harmonic", type: "radio", value: "gen-harmonic", name: "gen-group", lbl: "Harmonic"},
-            {id: "gen-json", type: "radio", value: "gen-json", name: "gen-group", lbl: "JSON"},
-            {id: "gen-filtering", type: "radio", value: "gen-filtering", name: "gen-group", lbl: "Filtering"}
+            {id: "gen-harmonic", type: "radio", value: "gen-harmonic", name: "generator", lbl: "Harmonic"},
+            {id: "gen-json", type: "radio", value: "gen-json", name: "generator", lbl: "JSON"},
+            {id: "gen-filtering", type: "radio", value: "gen-filtering", name: "generator", lbl: "Filtering"}
         ],
         init: function(container, config) {
 
@@ -46,6 +46,12 @@ define([
                 } else {
                     input.value = config[tplEl.id];
                 }
+
+                // adjust radio button selection
+                if (tplEl.type == "radio" && config[tplEl.name] && config[tplEl.name].name == tplEl.value) {
+                    input.setAttribute("checked", "true");
+                }
+
                 if (tplEl.name) {
                     input.name = tplEl.name;
                 }
@@ -68,6 +74,12 @@ define([
             this.input["gen-json"].onclick = function() {self.onRadioSelect.apply(self, arguments);};
             this.input["gen-filtering"].onclick = function() {self.onRadioSelect.apply(self, arguments);};
 
+            this.input["height"].onchange = function() {self.onInputChange.apply(self, arguments);};
+            this.input["width"].onchange = function() {self.onInputChange.apply(self, arguments);};
+            this.input["depth"].onchange = function() {self.onInputChange.apply(self, arguments);};
+
+            this.input["submit"].onclick = function() {self.onSubmit.apply(self, arguments);};
+
             return this;
         },
         onRadioSelect: function(e) {
@@ -86,7 +98,7 @@ define([
                         randomize: false
                     }
                 };
-                this.poolView.queryPool();
+
 
             } else if (el.value == "gen-json") {
                 // todo
@@ -98,8 +110,17 @@ define([
                         blur: 2
                     }
                 };
-                this.poolView.queryPool();
             }
+        },
+        onInputChange: function(e) {
+            var el = document.getElementById(e.target.id);
+            if (!el) {
+                throw "Invalid element triggered onInputChange";
+            }
+            this.config[el.name] = el.value;
+        },
+        onSubmit: function(e) {
+            this.poolView.queryPool();
         }
     };
 
