@@ -23,8 +23,11 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 
 	Pool3DView.prototype = {
 
-        queryPool: function() {
+        queryPool: function(modal) {
             var _poolView = this;
+
+            modal.show();
+
             this.poolServer.getPool(this.config, function(response) {
                 if (!response.pool) {
                     console.error("No pool information found in response");
@@ -34,6 +37,8 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
                 response.pool.minHeight = response.maxFinder.minHeight;
                 response.pool.maxHeight = response.maxFinder.maxHeight;
                 _poolView.pool = response.pool;
+
+                modal.hide();
 
                 _poolView.update();
                 _poolView.animate();

@@ -120,7 +120,7 @@ define([
             this.config[el.name] = el.value;
         },
         onSubmit: function(e) {
-            this.poolView.queryPool();
+            this.poolView.queryPool(this.modal);
         }
     };
 
