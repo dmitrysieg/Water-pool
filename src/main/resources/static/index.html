@@ -7,5 +7,46 @@
 	</head>
 	<body>
 		<script data-main="js/app.js" src="js/lib/require.js"></script>
+		<div id="modal">
+			<i class="spinner"><!-- --></i>
+		</div>
+		<div id="infopanel_container" style="display: none">
+			<div id="infopanel_position">
+				<p><!-- -->></p>
+			</div>
+			<div id="infopanel_control">
+				<form>
+					<div id="container-width">
+						<label for="ctl-width" class="label-left">Width</label>
+						<input type="number" id="ctl-width" name="width" value="100">
+					</div>
+					<div id="container-height">
+						<label for="ctl-height" class="label-left">Height</label>
+						<input type="number" id="ctl-height" name="height" value="100">
+					</div>
+					<div id="container-depth">
+						<label for="ctl-depth" class="label-left">Depth</label>
+						<input type="number" id="ctl-depth" name="depth" value="100">
+					</div>
+
+					<div id="container-submit">
+						<input type="button" id="ctl-submit" value="Apply">
+					</div>
+
+					<div id="container-gen-harmonic">
+						<label for="ctl-gen-harmonic">Harmonic</label>
+						<input type="radio" id="ctl-gen-harmonic" value="gen-harmonic" name="generator">
+					</div>
+					<div id="container-gen-json">
+						<label for="ctl-gen-json">JSON</label>
+						<input type="radio" id="ctl-gen-json" value="gen-json" name="generator">
+					</div>
+					<div id="container-gen-filtering">
+						<label for="ctl-gen-filtering">Filtering</label>
+						<input type="radio" id="ctl-gen-filtering" value="gen-filtering" checked="checked" name="generator">
+					</div>
+				</form>
+			</div>
+		</div>
 	</body>
 </html>

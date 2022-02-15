@@ -8,81 +8,28 @@ define([
     FilteringGenerator
 ) {
 
-    var UIControlPanel = function(poolView, config) {
+    var UIControlPanel = function(parent, poolView, config) {
+        this.parent = parent;
         this.poolView = poolView;
         this.config = config;
     };
 
     UIControlPanel.prototype = {
 
-        tpl: [
-            {id: "width", type: "number", lbl: "Width", name: "width"},
-            {id: "height", type: "number", lbl: "Height", name: "height"},
-            {id: "depth", type: "number", lbl: "Depth", name: "depth"},
-            {id: "submit", type: "button", value: "Apply"},
-            {id: "gen-harmonic", type: "radio", value: "gen-harmonic", name: "generator", lbl: "Harmonic"},
-            {id: "gen-json", type: "radio", value: "gen-json", name: "generator", lbl: "JSON"},
-            {id: "gen-filtering", type: "radio", value: "gen-filtering", name: "generator", lbl: "Filtering"}
-        ],
-        init: function(container, config) {
+        init: function(el) {
 
-            this.container = container;
-            this.input = {};
-
-            this.form = document.createElement("form");
-            this.container.appendChild(this.form);
-
-            for (var i = 0; i < this.tpl.length; i++) {
-
-                var tplEl = this.tpl[i];
-
-                var div = document.createElement("div");
-                div.id = "container-" + tplEl.id;
-                this.form.appendChild(div);
-
-                var input = document.createElement("input");
-                this.input[tplEl.id] = input;
-
-                input.type = tplEl.type;
-                input.id = "ctl-" + tplEl.id;
-
-                if (tplEl.value) {
-                    input.value = tplEl.value;
-                } else {
-                    input.value = config[tplEl.id];
-                }
-
-                // adjust radio button selection
-                if (tplEl.type == "radio" && config[tplEl.name] && config[tplEl.name].name == tplEl.value) {
-                    input.setAttribute("checked", "true");
-                }
-
-                if (tplEl.name) {
-                    input.name = tplEl.name;
-                }
-
-                if (tplEl.lbl) {
-                    var l = document.createElement("label");
-                    l.setAttribute("for", input.id);
-                    if (tplEl.type != "radio") {
-                        l.className = "label-left";
-                    }
-                    l.innerHTML = tplEl.lbl;
-                    div.appendChild(l);
-                }
-                div.appendChild(input);
-            }
+            this.el = el;
 
             var self = this;
-            this.input["gen-harmonic"].onclick = function() {self.onRadioSelect.apply(self, arguments);};
-            this.input["gen-json"].onclick = function() {self.onRadioSelect.apply(self, arguments);};
-            this.input["gen-filtering"].onclick = function() {self.onRadioSelect.apply(self, arguments);};
+            this.el.querySelector("#ctl-gen-harmonic").onclick = function() {self.onRadioSelect.apply(self, arguments);};
+            this.el.querySelector("#ctl-gen-json").onclick = function() {self.onRadioSelect.apply(self, arguments);};
+            this.el.querySelector("#ctl-gen-filtering").onclick = function() {self.onRadioSelect.apply(self, arguments);};
 
-            this.input["height"].onchange = function() {self.onInputChange.apply(self, arguments);};
-            this.input["width"].onchange = function() {self.onInputChange.apply(self, arguments);};
-            this.input["depth"].onchange = function() {self.onInputChange.apply(self, arguments);};
+            this.el.querySelector("#ctl-height").onchange = function() {self.onInputChange.apply(self, arguments);};
+            this.el.querySelector("#ctl-width").onchange = function() {self.onInputChange.apply(self, arguments);};
+            this.el.querySelector("#ctl-depth").onchange = function() {self.onInputChange.apply(self, arguments);};
 
-            this.input["submit"].onclick = function() {self.onSubmit.apply(self, arguments);};
+            this.el.querySelector("#ctl-submit").onclick = function() {self.onSubmit.apply(self, arguments);};
 
             return this;
         },
@@ -124,58 +71,47 @@ define([
             this.config[el.name] = el.value;
         },
         onSubmit: function(e) {
-            this.poolView.queryPool(this.modal);
+            this.poolView.queryPool(this.modal, this.parent);
         }
     };
 
-    var UIControls = function(container, config, poolView) {
+    var UIControls = function(el, config, poolView) {
 
         this.poolView = poolView;
 
-        var containerPanel = document.createElement("div");
-        containerPanel.id = "infopanel_container";
-
-        var positionPanel = document.createElement("div");
-        positionPanel.id = "infopanel_position";
-        containerPanel.appendChild(positionPanel);
-        var positionEl = document.createElement("p");
-        positionPanel.appendChild(positionEl);
-        this.positionEl = positionEl;
-
-        var controlPanel = document.createElement("div");
-        controlPanel.id = "infopanel_control";
-        containerPanel.appendChild(controlPanel);
-        this.uiControlPanel = new UIControlPanel(poolView, config).init(controlPanel, config);
-
-        this.container = container;
-        container.appendChild(containerPanel);
+        this.el = el;
+        this.positionEl = el.querySelector("#infopanel_position p");
+        this.uiControlPanel = new UIControlPanel(this, poolView, config).init(document.getElementById("infopanel_control"));
     };
 
     UIControls.prototype = {
         setModal: function(modal) {
             this.uiControlPanel.modal = modal;
         },
+        update: function(response) {
+            //
+        },
         updatePosition: function(html) {
             this.positionEl.innerHTML = html;
+        },
+        hide: function() {
+            this.el.style.display = "none";
+        },
+        show: function() {
+            this.el.style.display = "block";
         }
     };
 
-    var Modal = function(container) {
-        this.modal = document.createElement("div");
-        this.modal.className = "modal";
-        container.appendChild(this.modal);
-
-        this.modalIcon = document.createElement("i");
-        this.modalIcon.className = "spinner";
-        this.modal.appendChild(this.modalIcon);
+    var Modal = function(el) {
+        this.el = el;
     };
 
     Modal.prototype = {
         hide: function() {
-            this.modal.style.display = "none";
+            this.el.style.display = "none";
         },
         show: function() {
-            this.modal.style.display = "block";
+            this.el.style.display = "block";
         }
     };
 

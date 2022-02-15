@@ -21,14 +21,14 @@ require([
         height: 100,
         depth: 100,
         generator: {
-            name: "gen-filtering",
+            name: "filtering",
             params: {
                 blur: 10
             }
         }
     };
 
-    var modal = new Controls.Modal(document.body);
+    var modal = new Controls.Modal(document.getElementById("modal"));
     modal.show();
 
     var pool;
@@ -56,12 +56,14 @@ require([
 
             //new PoolTableView(pool, document.getElementById('pool'), 8, 8).render();
             poolView = new PoolView(response.pool, poolServer, config, document.body);
-            uiControls = new Controls.UIControls(document.body, config, poolView);
+            uiControls = new Controls.UIControls(document.getElementById("infopanel_container"), config, poolView);
             uiControls.setModal(modal);
             poolView.setUI(uiControls);
 
             poolView.init();
             modal.hide();
+            uiControls.show();
+            uiControls.update(response);
             waiter.dispatchEvent(new CustomEvent("done"));
         });
     }, 0);

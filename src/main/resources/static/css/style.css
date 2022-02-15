@@ -84,7 +84,7 @@ body {
     color: #0072B1;
 }
 
-.modal {
+#modal {
     display: none;
     z-index: 200;
     position: absolute;
@@ -97,10 +97,11 @@ body {
     opacity: 0.8;
 }
 
-.modal .spinner {
+#modal .spinner {
     position: absolute;
     left: 50%;
     top: 50%;
+    transform: translate(-32px, -32px);
     width: 64px;
     height: 64px;
     background-image: url("../images/spinner.gif");
