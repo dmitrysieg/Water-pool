@@ -128,25 +128,31 @@ define([
 
         this.poolView = poolView;
 
-        var uiPanel = document.createElement("div");
-        uiPanel.id = "infopanel";
+        var containerPanel = document.createElement("div");
+        containerPanel.id = "infopanel_container";
 
-        var textPanel = document.createElement("p");
-        textPanel.id = "infotext";
-        uiPanel.appendChild(textPanel);
+        var positionPanel = document.createElement("div");
+        positionPanel.id = "infopanel_position";
+        containerPanel.appendChild(positionPanel);
+        var positionEl = document.createElement("p");
+        positionPanel.appendChild(positionEl);
+        this.positionEl = positionEl;
 
         var controlPanel = document.createElement("div");
-        controlPanel.id = "controlpanel";
-        uiPanel.appendChild(controlPanel);
+        controlPanel.id = "infopanel_control";
+        containerPanel.appendChild(controlPanel);
         this.uiControlPanel = new UIControlPanel(poolView, config).init(controlPanel, config);
 
         this.container = container;
-        container.appendChild(uiPanel);
+        container.appendChild(containerPanel);
     };
 
     UIControls.prototype = {
         setModal: function(modal) {
             this.uiControlPanel.modal = modal;
+        },
+        updatePosition: function(html) {
+            this.positionEl.innerHTML = html;
         }
     };
 

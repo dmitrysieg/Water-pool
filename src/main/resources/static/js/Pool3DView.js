@@ -265,20 +265,22 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
             this.logPositions();
 		},
 		logPositions: function() {
-			var el = document.getElementById('infotext');
 			var dir = this.camera.getWorldDirection();
 
 			let angleX = Math.round(dir.angleTo(this.axisX) / Math.PI * 180);
 			let angleY = Math.round(dir.angleTo(this.axisY) / Math.PI * 180);
 			let angleZ = Math.round(dir.angleTo(this.axisZ) / Math.PI * 180);
 
-			el.innerHTML =
+			this.uiControls.updatePosition(
                 "pos X: " + Math.trunc(this.camera.position.x * 1000) / 1000 + "<br/>" +
                 "pos Y: " + Math.trunc(this.camera.position.y * 1000) / 1000 + "<br/>" +
 				"pos Z: " + Math.trunc(this.camera.position.z * 1000) / 1000 + "<br/>" +
 				"dir X: " + angleX + "<br/>" +
 				"dir Y: " + angleY + "<br/>" +
-				"dir Z: " + angleZ;
+				"dir Z: " + angleZ);
+		},
+		setUI: function(uiControls) {
+		    this.uiControls = uiControls;
 		}
 	};
 	

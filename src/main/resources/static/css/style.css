@@ -14,7 +14,7 @@ body {
     padding: 0;
 }
 
-#infopanel {
+#infopanel_container {
     position: absolute;
     z-index: 100;
     top: 10px; left: 10px;
@@ -25,28 +25,37 @@ body {
     opacity: 0.6;
     font-family: "Ubuntu";
 }
-#infotext, #infopanel form label {color: #fff; font-family: "Ubuntu";}
 
-#infotext, #infopanel #controlpanel {
+#infopanel_position,
+#infopanel_container form label {
+    color: #fff; font-family: "Ubuntu";
+}
+
+#infopanel_position, #infopanel_control {
     border: 1px solid #fff;
     box-shadow: inset 5px 5px 50px 1px #0072b1;
     margin: 10px;
     padding: 5px 10px;
 }
-#infopanel form label {
+
+#infopanel_position p {
+    margin: 5px;
+}
+
+#infopanel_control form label {
     text-align: left;
     width: 70px;
     margin: 5px;
 }
 /* Excluding radio */
-#infopanel form label.label-left {
+#infopanel_control form label.label-left {
     float:left;
 }
-#infopanel form input[type="radio"] {
+#infopanel_control form input[type="radio"] {
     float: left;
     margin-right: 10px;
 }
-#infopanel form input[type="number"] {
+#infopanel_control form input[type="number"] {
     border: 1px solid #fff;
     margin: 5px;
     color: #fff;
@@ -54,7 +63,7 @@ body {
     padding: 3px;
     font-family: "Ubuntu";
 }
-#infopanel form input[type="button"] {
+#infopanel_control form input[type="button"] {
     float: right;
     border: 1px solid #fff;
     margin: 5px;
@@ -63,7 +72,7 @@ body {
     padding: 3px;
     font-family: "Ubuntu";
 }
-#infopanel form input[type="button"]:hover {
+#infopanel_control form input[type="button"]:hover {
     background-color: #fff;
     color: #0072B1;
 }
