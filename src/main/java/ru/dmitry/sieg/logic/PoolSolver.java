@@ -1,5 +1,7 @@
 package ru.dmitry.sieg.logic;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.dmitry.sieg.entity.Pool;
 import ru.dmitry.sieg.logic.generator.GeneratorFunction;
 import ru.dmitry.sieg.logic.solver.SolverContext;
@@ -10,6 +12,8 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 public class PoolSolver implements GeneratorFunction {
+
+    private static final Logger logger = LoggerFactory.getLogger(PoolSolver.class);
 
     private final SolverContext context;
     private final Pool pool;
@@ -24,6 +28,8 @@ public class PoolSolver implements GeneratorFunction {
     }
 
     public void solve(final Pool pool) {
+
+        logger.debug("solve(): ");
 
         if (pool.isHasWater()) {
             // do nothing.

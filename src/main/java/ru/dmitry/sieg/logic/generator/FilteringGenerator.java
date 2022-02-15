@@ -170,4 +170,11 @@ public class FilteringGenerator implements Generator {
     private interface Action {
         void call(final int x, final int y);
     }
+
+    @Override
+    public String toString() {
+        return "FilteringGenerator{" +
+                "blur=" + blur +
+                '}';
+    }
 }
