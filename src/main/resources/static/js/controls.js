@@ -33,7 +33,12 @@ define([
             this.container.appendChild(this.form);
 
             for (var i = 0; i < this.tpl.length; i++) {
+
                 var tplEl = this.tpl[i];
+
+                var div = document.createElement("div");
+                div.id = "container-" + tplEl.id;
+                this.form.appendChild(div);
 
                 var input = document.createElement("input");
                 this.input[tplEl.id] = input;
@@ -58,15 +63,14 @@ define([
 
                 if (tplEl.lbl) {
                     var l = document.createElement("label");
-                    l["for"] = input.id;
+                    l.setAttribute("for", input.id);
                     if (tplEl.type != "radio") {
                         l.className = "label-left";
                     }
                     l.innerHTML = tplEl.lbl;
-                    this.form.appendChild(l);
+                    div.appendChild(l);
                 }
-                this.form.appendChild(input);
-                this.form.appendChild(document.createElement("br"));
+                div.appendChild(input);
             }
 
             var self = this;

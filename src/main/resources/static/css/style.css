@@ -27,8 +27,12 @@ body {
 }
 
 #infopanel_position,
-#infopanel_container form label {
-    color: #fff; font-family: "Ubuntu";
+#infopanel_container form label,
+#infopanel_control form input[type="number"],
+#infopanel_control form input[type="button"] {
+    color: #fff;
+    font-family: "Ubuntu";
+    text-shadow: 1px 1px 10px #fff;
 }
 
 #infopanel_position, #infopanel_control {
@@ -43,35 +47,38 @@ body {
 }
 
 #infopanel_control form label {
-    text-align: left;
     width: 70px;
     margin: 5px;
 }
+
 /* Excluding radio */
 #infopanel_control form label.label-left {
-    float:left;
+    display: inline-block;
 }
+
 #infopanel_control form input[type="radio"] {
     float: left;
     margin-right: 10px;
 }
+
 #infopanel_control form input[type="number"] {
     border: 1px solid #fff;
     margin: 5px;
-    color: #fff;
     background-color: #0072B1;
     padding: 3px;
-    font-family: "Ubuntu";
 }
+
+#container-submit {
+    text-align: right;
+}
+
 #infopanel_control form input[type="button"] {
-    float: right;
     border: 1px solid #fff;
     margin: 5px;
-    color: #fff;
     background-color: #0072B1;
-    padding: 3px;
-    font-family: "Ubuntu";
+    padding: 3px 12px;
 }
+
 #infopanel_control form input[type="button"]:hover {
     background-color: #fff;
     color: #0072B1;
