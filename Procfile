@@ -1,0 +1,1 @@
+web: mvn spring-boot:run -f pom.xml
