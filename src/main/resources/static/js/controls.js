@@ -82,14 +82,48 @@ define([
         this.el = el;
         this.positionEl = el.querySelector("#infopanel_position p");
         this.uiControlPanel = new UIControlPanel(this, poolView, config).init(document.getElementById("infopanel_control"));
+
+        this.btnCopyPool = this.el.querySelector("#copy_pool");
+        this.btnCopyWater = this.el.querySelector("#copy_water");
+
+        let self = this;
+        this.btnCopyPool.onclick = function() {self.copyPool.apply(self, arguments);};
+        this.btnCopyWater.onclick = function() {self.copyWater.apply(self, arguments);};
     };
 
     UIControls.prototype = {
+        cache: {},
+        copyValue: function(value) {
+            let textArea = document.createElement("textarea");
+            textArea.value = value;
+
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                var successful = document.execCommand('copy');
+            } catch (err) {
+                console.error('Unable to copy', err);
+            }
+            document.body.removeChild(textArea);
+        },
+        copyPool: function() {
+            this.copyValue(JSON.stringify(this.cache.poolHeight));
+        },
+        copyWater: function() {
+            this.copyValue(JSON.stringify(this.cache.waterHeight));
+        },
         setModal: function(modal) {
             this.uiControlPanel.modal = modal;
         },
         update: function(response) {
-            //
+            this.cache.poolHeight = response.pool.poolHeight;
+            this.cache.waterHeight = response.pool.waterHeight;
         },
         updatePosition: function(html) {
             this.positionEl.innerHTML = html;

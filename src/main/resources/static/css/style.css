@@ -83,6 +83,33 @@ body {
     color: #0072B1;
 }
 
+.infopanel_row {
+    display: flex;
+    margin: 5px;
+}
+
+.infopanel_column {
+    display: inline-block;
+    width: 50%;
+    margin: 0 5px 5px 5px;
+}
+
+.icon {
+    display: inline-block;
+    vertical-align: bottom;
+    height: 1em;
+    width: 1em;
+}
+
+.icon-clipboard {
+    background: url("../images/clipboard_copy.svg") left top/100%;
+    float: right;
+}
+
+.icon.clickable {
+    cursor: pointer;
+}
+
 #modal {
     display: none;
     z-index: 200;

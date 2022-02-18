@@ -23,10 +23,10 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
 
 	Pool3DView.prototype = {
 
-        queryPool: function(modal, uiControlPanel) {
+        queryPool: function(modal, uiControls) {
             var _poolView = this;
 
-            uiControlPanel.hide();
+            uiControls.hide();
             modal.show();
 
             this.poolServer.getPool(this.config, function(response) {
@@ -40,7 +40,8 @@ define(['./lib/three.min', './lib/OrbitControls'], function(THREE, oc) {
                 _poolView.pool = response.pool;
 
                 modal.hide();
-                uiControlPanel.show();
+                uiControls.show();
+                uiControls.update(response);
 
                 _poolView.update();
                 _poolView.animate();
